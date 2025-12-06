@@ -1,0 +1,3203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Real-Time Video Analytics Platform - Project Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2D3436;
+            --light: #F7F8FA;
+            --success: #95E1D3;
+            --warning: #FFA502;
+            --info: #6C5CE7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            font-weight: 900;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        /* Phase Sections */
+        .phases-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .phase-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: popIn 0.6s ease-out;
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @media (max-width: 1024px) {
+            .phase-card {
+                max-width: 100%;
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .phase-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .phase-header {
+            padding: 25px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .phase-header.phase1 { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E72 100%); }
+        .phase-header.phase2 { background: linear-gradient(135deg, #4ECDC4 0%, #44A6A2 100%); }
+        .phase-header.phase3 { background: linear-gradient(135deg, #FFE66D 0%, #FFC93C 100%); }
+        .phase-header.phase4 { background: linear-gradient(135deg, #95E1D3 0%, #6FB89E 100%); }
+        .phase-header.phase5 { background: linear-gradient(135deg, #6C5CE7 0%, #5F3DC4 100%); }
+        .phase-header.phase6 { background: linear-gradient(135deg, #FFA502 0%, #FF8C42 100%); }
+        .phase-header.phase7 { background: linear-gradient(135deg, #FF6B9D 0%, #E84393 100%); }
+        .phase-header.phase8 { background: linear-gradient(135deg, #74B9FF 0%, #0984E3 100%); }
+        .phase-header.phase9 { background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%); }
+        .phase-header.phase10 { background: linear-gradient(135deg, #00B894 0%, #00A676 100%); }
+        .phase-header.phase11 { background: linear-gradient(135deg, #FF7675 0%, #D63031 100%); }
+        .phase-header.phase12 { background: linear-gradient(135deg, #FDCB6E 0%, #E8A500 100%); }
+
+        .phase-icon {
+            font-size: 2em;
+        }
+
+        .phase-header h2 {
+            font-size: 1.4em;
+            flex: 1;
+        }
+
+        .phase-content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .phase-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .phase-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .phase-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        .phase-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85em;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist li:hover {
+            background: #f9f9f9;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checklist input[type="checkbox"]:checked + label {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .checklist label {
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Bottom Stats */
+        .bottom-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .stat-box .big-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timeline-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 35px;
+            top: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 5px;
+        }
+
+        .timeline-content h3 {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .timeline-content p {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .footer p {
+            font-size: 1.05em;
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+
+        /* Project Overview Section */
+        .project-overview {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .overview-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .overview-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .overview-icon {
+            font-size: 3.5em;
+            min-width: 80px;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .overview-content {
+            flex: 1;
+        }
+
+        .overview-content h3 {
+            color: var(--dark);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .overview-content p {
+            color: #555;
+            font-size: 1em;
+            line-height: 1.8;
+            text-align: left;
+            margin-bottom: 0;
+        }
+
+        .overview-content ul {
+            color: #555;
+            font-size: 1em;
+            line-height: 1.9;
+            list-style: none;
+            padding: 0;
+        }
+
+        .overview-content li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .overview-content li strong {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .overview-card {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .overview-icon {
+                min-width: auto;
+            }
+
+            .overview-content p {
+                font-size: 0.95em;
+            }
+
+            .overview-content ul {
+                font-size: 0.95em;
+            }
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Problems & Solutions Section */
+        .problems-solutions-section {
+            margin-bottom: 50px;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .problem-solution-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .problem-solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .ps-header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E72 100%);
+            color: white;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ps-icon {
+            font-size: 2.5em;
+            line-height: 1;
+        }
+
+        .ps-header h3 {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .ps-content {
+            padding: 25px;
+        }
+
+        .problem-text {
+            color: #d32f2f;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .solution-text {
+            color: #4ECDC4;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .ps-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+            margin: 15px 0;
+            border-radius: 1px;
+        }
+
+        .impact-badge {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(255, 107, 107, 0.1));
+            border: 2px solid #4ECDC4;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #4ECDC4;
+            text-align: center;
+        }
+
+        .badge-title {
+            color: #FF6B6B;
+            font-weight: 700;
+        }
+
+        /* Scale Capacity Section */
+        .scale-capacity-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+        }
+
+        .capacity-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .capacity-card {
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .capacity-card:hover {
+            transform: scale(1.05);
+        }
+
+        .capacity-card.baseline {
+            background: linear-gradient(135deg, #74B9FF 0%, #0984E3 100%);
+        }
+
+        .capacity-card.scaling {
+            background: linear-gradient(135deg, #FDCB6E 0%, #E8A500 100%);
+        }
+
+        .capacity-card.enterprise {
+            background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%);
+        }
+
+        .capacity-card.godmode {
+            background: linear-gradient(135deg, #00B894 0%, #00A676 100%);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .capacity-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .capacity-metric {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .capacity-metric:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 8px 0 0 0;
+        }
+
+        .capacity-desc {
+            font-size: 0.9em;
+            margin-top: 25px;
+            opacity: 0.95;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Scaling Explanation */
+        .scaling-explanation {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(255, 107, 107, 0.05));
+            border-radius: 15px;
+            padding: 40px;
+            border: 2px solid rgba(78, 205, 196, 0.2);
+        }
+
+        .scaling-factors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .factor {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .factor:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .factor-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+
+        .factor h4 {
+            color: var(--dark);
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .factor p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .problems-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .capacity-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .scaling-factors {
+                grid-template-columns: 1fr;
+            }
+
+            .scale-capacity-section {
+                padding: 25px;
+            }
+
+            .scaling-explanation {
+                padding: 25px;
+            }
+        }
+
+        /* Multi-User Tracking Section */
+        .multiuser-section {
+            background: white;
+            border-radius: 15px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .scenario-setup {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(255, 107, 107, 0.05));
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+
+        .user-setup-cards {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 5px solid;
+            flex: 0 1 200px;
+        }
+
+        .user-card.alice-user {
+            border-top-color: #FF6B6B;
+        }
+
+        .user-card.bob-user {
+            border-top-color: #4ECDC4;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-avatar {
+            font-size: 3em;
+            margin-bottom: 12px;
+        }
+
+        .user-card h4 {
+            color: var(--dark);
+            font-size: 1.3em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .user-id {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .user-action {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .vs-text {
+            font-size: 1.5em;
+            color: var(--dark);
+            font-weight: 700;
+            opacity: 0.5;
+        }
+
+        /* Timeline Flow */
+        .timeline-flow {
+            background: linear-gradient(135deg, rgba(148, 225, 211, 0.05), rgba(255, 230, 109, 0.05));
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 50px;
+        }
+
+        .events-timeline {
+            position: relative;
+            padding: 30px 0;
+        }
+
+        .event-item {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 0;
+        }
+
+        .event-item.alice-event {
+            justify-content: flex-start;
+        }
+
+        .event-item.bob-event {
+            justify-content: flex-end;
+        }
+
+        .event-item.bob-event .event-time {
+            order: 2;
+        }
+
+        .event-item.bob-event .event-icon {
+            order: 1;
+        }
+
+        .event-item.bob-event .event-details {
+            order: 0;
+            text-align: right;
+        }
+
+        .event-time {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-icon {
+            font-size: 2.5em;
+            line-height: 1;
+        }
+
+        .event-details {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .event-details h4 {
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 1em;
+            font-weight: 700;
+        }
+
+        .event-details p {
+            color: #666;
+            font-size: 0.9em;
+            font-family: monospace;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Data Flow */
+        .data-flow-section {
+            margin-bottom: 50px;
+        }
+
+        .flow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            align-items: center;
+        }
+
+        .flow-step {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--primary);
+        }
+
+        .flow-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .step-number {
+            font-size: 2.5em;
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .flow-step h4 {
+            color: var(--dark);
+            margin-bottom: 12px;
+            font-size: 1em;
+            font-weight: 700;
+        }
+
+        .flow-step p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border-left: 3px solid var(--primary);
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.75em;
+            margin-top: 12px;
+            text-align: left;
+            overflow-x: auto;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            color: var(--secondary);
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        /* Final State */
+        .final-state {
+            margin-bottom: 50px;
+        }
+
+        .state-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .state-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .state-card h4 {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px;
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .state-content {
+            padding: 25px;
+        }
+
+        .state-content p {
+            color: #555;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-family: monospace;
+        }
+
+        .state-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .metric-note {
+            color: #888;
+            font-size: 0.85em;
+            margin-left: 8px;
+        }
+
+        .audit-list p {
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        /* UI Display */
+        .ui-display {
+            margin-bottom: 0;
+        }
+
+        .dashboard-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-view {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-view:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .dashboard-view.alice-dashboard .dashboard-header {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E72);
+        }
+
+        .dashboard-view.bob-dashboard .dashboard-header {
+            background: linear-gradient(135deg, #4ECDC4, #44A6A2);
+        }
+
+        .dashboard-header {
+            color: white;
+            padding: 18px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .dashboard-body {
+            padding: 25px;
+        }
+
+        .video-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .video-section h4 {
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 1em;
+            font-weight: 700;
+        }
+
+        .video-time {
+            color: #666;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .analytics-section h4 {
+            color: var(--dark);
+            margin-bottom: 18px;
+            font-size: 1em;
+            font-weight: 700;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .metric-name {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .metric-number {
+            color: var(--primary);
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .updated-note {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(255, 107, 107, 0.1));
+            border-left: 5px solid var(--secondary);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .insight-box p {
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .multiuser-section {
+                padding: 25px;
+            }
+
+            .user-setup-cards {
+                gap: 20px;
+            }
+
+            .vs-text {
+                display: none;
+            }
+
+            .user-card {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .event-item {
+                justify-content: center !important;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .event-item.bob-event {
+                align-items: flex-start;
+            }
+
+            .event-item.bob-event .event-details {
+                text-align: left;
+            }
+
+            .flow-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+
+            .state-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .phases-container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-section h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .summary-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .summary-item h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .summary-item p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        /* Success Animation */
+        @keyframes checkmark {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .checklist input[type="checkbox"]:checked::after {
+            animation: checkmark 0.3s ease-out;
+        }
+
+        /* Toggle functionality */
+        .phase-toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: white;
+            transition: transform 0.3s;
+        }
+
+        .phase-toggle-btn.collapsed::before {
+            transform: rotate(-90deg);
+        }
+
+        .phase-items {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .phase-items.collapsed {
+            max-height: 0;
+        }
+
+        /* User Identification Section Styles */
+        .user-identification-section {
+            padding: 60px 40px;
+            margin-bottom: 80px;
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            border-radius: 20px;
+        }
+
+        .user-flow-diagram {
+            margin-bottom: 60px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .flow-box {
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            border-radius: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .flow-box:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .flow-box.frontend {
+            border-left: 5px solid #4CAF50;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+        }
+
+        .flow-box.event-capture {
+            border-left: 5px solid #2196F3;
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+        }
+
+        .flow-box.api {
+            border-left: 5px solid #FF9800;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+        }
+
+        .flow-box.backend {
+            border-left: 5px solid #9C27B0;
+            background: linear-gradient(135deg, #f3e5f5 0%, #ffffff 100%);
+        }
+
+        .flow-box.kafka {
+            border-left: 5px solid #E91E63;
+            background: linear-gradient(135deg, #fce4ec 0%, #ffffff 100%);
+        }
+
+        .flow-box.consumer {
+            border-left: 5px solid #00BCD4;
+            background: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%);
+        }
+
+        .flow-box.database {
+            border-left: 5px solid #FF5722;
+            background: linear-gradient(135deg, #ffebee 0%, #ffffff 100%);
+        }
+
+        .flow-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .flow-content p {
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .code-snippet {
+            background: #f5f5f5;
+            border-left: 3px solid #667eea;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 12px 0;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .flow-note {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .flow-divider {
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .user-tracking-tables {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+        }
+
+        .tables-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .tables-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .table-card {
+            padding: 25px;
+            border-radius: 12px;
+            border-top: 4px solid #667eea;
+            background: #f9f9f9;
+        }
+
+        .table-card h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-size: 1.15em;
+        }
+
+        .table-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+        }
+
+        .data-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .data-table th {
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .alice-row {
+            background: #e8f4f8;
+        }
+
+        .alice-row:hover {
+            background: #d0e8f0;
+        }
+
+        .bob-row {
+            background: #f0e8f8;
+        }
+
+        .bob-row:hover {
+            background: #e0d0f0;
+        }
+
+        .aggregated-row {
+            background: #f0f8e8;
+            font-weight: bold;
+        }
+
+        .user-cell {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .metric-value {
+            text-align: center;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .table-note {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .table-insight {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .table-insight p {
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .table-insight ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .table-insight li {
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .query-examples {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+        }
+
+        .query-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .query-card {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .query-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .query-card h4 {
+            margin-bottom: 12px;
+            color: var(--dark);
+            font-size: 1.05em;
+        }
+
+        .query-code {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            overflow-x: auto;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .query-use {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            background: #f9f9f9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .why-matters-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 60px;
+        }
+
+        .matters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .matter-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .matter-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .matter-card h4 {
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .matter-card p {
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .final-clarity-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .clarity-content {
+            color: #333;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .clarity-content p {
+            margin-bottom: 15px;
+        }
+
+        .clarity-content strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎬 Real-Time Video Analytics Platform</h1>
+            <p>📊 Complete Event-Driven Architecture Implementation | 12 Phases | Enterprise-Grade Solution</p>
+        </div>
+
+        <!-- Project Overview Section -->
+        <div class="project-overview">
+            <div class="overview-card overview-problem">
+                <div class="overview-icon">❌</div>
+                <div class="overview-content">
+                    <h3>The Problem Statement</h3>
+                    <p>
+                        Traditional video streaming platforms struggle with real-time analytics at scale. Current REST-based polling approaches create massive network overhead, 
+                        high latency (5-10 second delays), and database bottlenecks when tracking millions of concurrent viewer events (play, pause, seek, quality changes). 
+                        Systems cannot handle 10,000+ events per second without degrading user experience. Aggregating analytics requires post-processing delays, making 
+                        dashboards stale. Complex event correlation and pattern detection become computationally expensive. There's no efficient way to stream, process, 
+                        and persist real-time viewer engagement metrics without building a complete custom solution from scratch.
+                    </p>
+                </div>
+            </div>
+
+            <div class="overview-card overview-solution">
+                <div class="overview-icon">✅</div>
+                <div class="overview-content">
+                    <h3>The Solution Architecture</h3>
+                    <p>
+                        Build an <strong>event-driven, real-time analytics pipeline</strong> using Apache Kafka as the event backbone. Frontend captures user interactions 
+                        (play, pause, seek, quality changes) and sends them via REST to a Spring Boot producer, which publishes events to Kafka topics partitioned by videoId. 
+                        Kafka Consumer services listen to these topics, deserialize events in real-time, process aggregations (views, watch time, play-pause ratios), and 
+                        persist metrics to PostgreSQL. React frontend polls analytics endpoints every 2 seconds, displaying live dashboards with charts. This decouples 
+                        event capture from analytics processing, handles 10K+ events/sec, provides sub-second latency, enables horizontal scaling via consumer groups, 
+                        and ensures fault tolerance. Advanced features include WebSocket push updates, idempotent processing, audit logging, and comprehensive monitoring.
+                    </p>
+                </div>
+            </div>
+
+            <div class="overview-card overview-benefits">
+                <div class="overview-icon">🎯</div>
+                <div class="overview-content">
+                    <h3>Key Benefits & Learning Outcomes</h3>
+                    <ul style="text-align: left; margin-top: 15px; line-height: 1.8;">
+                        <li>✨ <strong>Kafka Mastery:</strong> Producers, consumers, partitioning, consumer groups, offset management, exactly-once semantics</li>
+                        <li>🏗️ <strong>Event-Driven Architecture:</strong> Decoupled services, asynchronous processing, scalable event pipelines</li>
+                        <li>💾 <strong>Database Design:</strong> Denormalization for analytics, indexing, query optimization, real-time aggregations</li>
+                        <li>⚡ <strong>Performance:</strong> Load testing, optimization, monitoring consumer lag, throughput benchmarking</li>
+                        <li>🎨 <strong>Full-Stack:</strong> Spring Boot microservices, React UI, REST APIs, WebSocket real-time updates</li>
+                        <li>🚀 <strong>Production Ready:</strong> Docker containerization, error handling, CI/CD, comprehensive documentation</li>
+                        <li>🧠 <strong>System Design:</strong> Handle 1M concurrent users, 10K events/sec, 7-day data retention, multi-region deployment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3>12</h3>
+                <p>Comprehensive Phases</p>
+            </div>
+            <div class="stat-card">
+                <h3>150+</h3>
+                <p>Individual Tasks</p>
+            </div>
+            <div class="stat-card">
+                <h3>4-6</h3>
+                <p>Weeks Timeline</p>
+            </div>
+            <div class="stat-card">
+                <h3>10K+</h3>
+                <p>Events/Second Capacity</p>
+            </div>
+        </div>
+
+        <!-- Problems & Solutions Section -->
+        <div class="problems-solutions-section">
+            <h2 style="text-align: center; color: white; margin-bottom: 40px; font-size: 2.5em; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">🎯 Problems vs Kafka Solutions</h2>
+            
+            <div class="problems-grid">
+                <!-- Problem 1 -->
+                <div class="problem-solution-card">
+                    <div class="ps-header">
+                        <span class="ps-icon">❌</span>
+                        <h3>REST Polling Bottleneck</h3>
+                    </div>
+                    <div class="ps-content">
+                        <p class="problem-text"><strong>Problem:</strong> Frontend polls every 2 seconds for updates. With 1M users, that's 500K requests/sec just for polling!</p>
+                        <div class="ps-divider"></div>
+                        <p class="solution-text"><strong>Kafka Solution:</strong> Bi-directional push via consumer groups. Each consumer processes events once, scales horizontally. Same 1M users = only 10K events/sec to process.</p>
+                        <div class="impact-badge">
+                            <span class="badge-title">Impact:</span> 50x reduction in network calls
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem 2 -->
+                <div class="problem-solution-card">
+                    <div class="ps-header">
+                        <span class="ps-icon">❌</span>
+                        <h3>Database Bottleneck</h3>
+                    </div>
+                    <div class="ps-content">
+                        <p class="problem-text"><strong>Problem:</strong> Every analytics request hits database directly. 100K concurrent queries crash the DB. Response time: 500ms-5sec.</p>
+                        <div class="ps-divider"></div>
+                        <p class="solution-text"><strong>Kafka Solution:</strong> Consumer aggregates & caches in DB. Frontend queries pre-aggregated metrics from analytics table (indexed). Response time: <5ms. Database handles 10x more load.</p>
+                        <div class="impact-badge">
+                            <span class="badge-title">Impact:</span> 100-1000x faster queries
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem 3 -->
+                <div class="problem-solution-card">
+                    <div class="ps-header">
+                        <span class="ps-icon">❌</span>
+                        <h3>Latency Issues</h3>
+                    </div>
+                    <div class="ps-content">
+                        <p class="problem-text"><strong>Problem:</strong> 2-5 second delay before analytics update. User plays video but dashboard shows old data. Poor UX.</p>
+                        <div class="ps-divider"></div>
+                        <p class="solution-text"><strong>Kafka Solution:</strong> Events processed in real-time by consumers. Analytics update in <500ms. With WebSocket (Phase 10): <100ms push latency.</p>
+                        <div class="impact-badge">
+                            <span class="badge-title">Impact:</span> 10-50x faster insights
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem 4 -->
+                <div class="problem-solution-card">
+                    <div class="ps-header">
+                        <span class="ps-icon">❌</span>
+                        <h3>Lost Events</h3>
+                    </div>
+                    <div class="ps-content">
+                        <p class="problem-text"><strong>Problem:</strong> No event queue. During peak hours, REST requests get dropped. 5-10% event loss. Metrics incomplete.</p>
+                        <div class="ps-divider"></div>
+                        <p class="solution-text"><strong>Kafka Solution:</strong> Kafka acts as event buffer. 7-day retention. Consumer fails? Restart and replay. Zero event loss. Exactly-once semantics guarantee.</p>
+                        <div class="impact-badge">
+                            <span class="badge-title">Impact:</span> 100% reliability
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem 5 -->
+                <div class="problem-solution-card">
+                    <div class="ps-header">
+                        <span class="ps-icon">❌</span>
+                        <h3>Scaling Nightmare</h3>
+                    </div>
+                    <div class="ps-content">
+                        <p class="problem-text"><strong>Problem:</strong> Cannot scale without monolithic changes. One server handles 1K events/sec max. Need 10 servers for 10K events/sec = complex deployment.</p>
+                        <div class="ps-divider"></div>
+                        <p class="solution-text"><strong>Kafka Solution:</strong> Add consumer instances = instant scale. 1 consumer → 5 consumers → 50 consumers. Kafka auto-distributes partitions. Linear scaling.</p>
+                        <div class="impact-badge">
+                            <span class="badge-title">Impact:</span> Infinite horizontal scale
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem 6 -->
+                <div class="problem-solution-card">
+                    <div class="ps-header">
+                        <span class="ps-icon">❌</span>
+                        <h3>Data Silos</h3>
+                    </div>
+                    <div class="ps-content">
+                        <p class="problem-text"><strong>Problem:</strong> Analytics locked in one service. Data science team wants raw events for ML. Reporting team wants aggregations. Incompatible.</p>
+                        <div class="ps-divider"></div>
+                        <p class="solution-text"><strong>Kafka Solution:</strong> One topic, many consumers. Analytics consumer → dashboard. ML consumer → model training. Reporting consumer → data warehouse. Decoupled pipelines.</p>
+                        <div class="impact-badge">
+                            <span class="badge-title">Impact:</span> Universal data source
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scale Capacity Section -->
+        <div class="scale-capacity-section">
+            <h2 style="text-align: center; color: var(--dark); margin-bottom: 35px; font-size: 2.2em;">📈 How Kafka Handles Traffic at Scale</h2>
+            
+            <div class="capacity-cards">
+                <div class="capacity-card baseline">
+                    <h3>📊 Baseline Load</h3>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Concurrent Users</p>
+                        <p class="metric-value">10,000</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Events/Second</p>
+                        <p class="metric-value">1,000</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Consumer Instances</p>
+                        <p class="metric-value">1-2</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">DB Queries/Sec</p>
+                        <p class="metric-value">10</p>
+                    </div>
+                    <p class="capacity-desc">Perfect for startups and small platforms. Single consumer handles all events.</p>
+                </div>
+
+                <div class="capacity-card scaling">
+                    <h3>🚀 Scaling Phase</h3>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Concurrent Users</p>
+                        <p class="metric-value">100,000</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Events/Second</p>
+                        <p class="metric-value">10,000</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Consumer Instances</p>
+                        <p class="metric-value">5-10</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">DB Queries/Sec</p>
+                        <p class="metric-value">50</p>
+                    </div>
+                    <p class="capacity-desc">Add 5-10 consumer instances. Kafka auto-distributes partitions. Linear performance.</p>
+                </div>
+
+                <div class="capacity-card enterprise">
+                    <h3>🏢 Enterprise Scale</h3>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Concurrent Users</p>
+                        <p class="metric-value">1,000,000</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Events/Second</p>
+                        <p class="metric-value">100,000</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Consumer Instances</p>
+                        <p class="metric-value">50-100</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">DB Queries/Sec</p>
+                        <p class="metric-value">500</p>
+                    </div>
+                    <p class="capacity-desc">Deploy 50-100+ consumer instances across regions. Multi-partition topic. Infinite scale.</p>
+                </div>
+
+                <div class="capacity-card godmode">
+                    <h3>🌍 Global Scale (Netflix/YouTube tier)</h3>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Concurrent Users</p>
+                        <p class="metric-value">100,000,000+</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Events/Second</p>
+                        <p class="metric-value">1,000,000+</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Consumer Instances</p>
+                        <p class="metric-value">1000+</p>
+                    </div>
+                    <div class="capacity-metric">
+                        <p class="metric-label">Kafka Brokers</p>
+                        <p class="metric-value">10-50</p>
+                    </div>
+                    <p class="capacity-desc">Multi-region Kafka cluster. Thousands of consumers. Data warehouse pipelines. ML serving.</p>
+                </div>
+            </div>
+
+            <!-- How Kafka Scales -->
+            <div class="scaling-explanation">
+                <h3 style="text-align: center; margin-bottom: 30px; color: var(--dark); font-size: 1.8em;">How Kafka Achieves This Scale</h3>
+                
+                <div class="scaling-factors">
+                    <div class="factor">
+                        <div class="factor-icon">📂</div>
+                        <h4>Partitioning</h4>
+                        <p>Topic "video-events" split into 300 partitions (one per 3,300 events/sec). Each partition processes independently.</p>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-icon">👥</div>
+                        <h4>Consumer Groups</h4>
+                        <p>Add new consumer instance → Kafka auto-assigns partitions to it. Remove instance → Kafka redistributes load. Dynamic scaling.</p>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-icon">💾</div>
+                        <h4>Log-Based Storage</h4>
+                        <p>Append-only log structure. Write: O(1) sequential I/O. Read: O(1) with offset. Massively parallel without locks.</p>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-icon">🔄</div>
+                        <h4>Replication</h4>
+                        <p>Each partition replicated across 3 brokers. One fails → others serve traffic. Zero downtime. High availability.</p>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-icon">⚡</div>
+                        <h4>Batching</h4>
+                        <p>Producers batch 1000s of events into single write. Consumers batch process. 10-100x throughput improvement.</p>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-icon">🗜️</div>
+                        <h4>Compression</h4>
+                        <p>Snappy/LZ4 compression reduces network & storage by 5-10x. Same events, fraction of bandwidth.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-User Tracking Section -->
+        <div class="multiuser-section">
+            <h2 style="text-align: center; color: var(--dark); margin-bottom: 40px; font-size: 2.5em;">👥 Real-Time Multi-User Tracking Architecture</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; margin-bottom: 40px; max-width: 900px; margin-left: auto; margin-right: auto;">
+                Watch how the system tracks multiple concurrent users performing different actions on the same video in real-time, 
+                aggregates their events, and displays live analytics without any latency or data loss.
+            </p>
+
+            <!-- Scenario Setup -->
+            <div class="scenario-setup">
+                <h3 style="margin-bottom: 25px; color: var(--dark);">📍 Scenario: Alice & Bob Watch Same Video</h3>
+                <div class="user-setup-cards">
+                    <div class="user-card alice-user">
+                        <div class="user-avatar">👩‍💻</div>
+                        <h4>Alice</h4>
+                        <p class="user-id">user-alice</p>
+                        <p class="user-action">Watching: "Learn Kafka Basics"</p>
+                        <p class="user-action">Video ID: abc123</p>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="user-card bob-user">
+                        <div class="user-avatar">👨‍💻</div>
+                        <h4>Bob</h4>
+                        <p class="user-id">user-bob</p>
+                        <p class="user-action">Watching: "Learn Kafka Basics"</p>
+                        <p class="user-action">Video ID: abc123</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Flow Timeline -->
+            <div class="timeline-flow">
+                <h3 style="margin-bottom: 30px; color: var(--dark);">⏱️ Real-Time Event Timeline (12:00:00 - 12:01:15)</h3>
+                
+                <div class="events-timeline">
+                    <div class="event-item alice-event">
+                        <div class="event-time">12:00:00</div>
+                        <div class="event-icon">▶️</div>
+                        <div class="event-details">
+                            <h4>Alice Clicks PLAY</h4>
+                            <p>Event: {videoId: abc123, userId: alice, eventType: PLAY, ts: 12:00:00}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item bob-event">
+                        <div class="event-time">12:00:02</div>
+                        <div class="event-icon">▶️</div>
+                        <div class="event-details">
+                            <h4>Bob Clicks PLAY (2 seconds later)</h4>
+                            <p>Event: {videoId: abc123, userId: bob, eventType: PLAY, ts: 12:00:02}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item alice-event">
+                        <div class="event-time">12:00:10</div>
+                        <div class="event-icon">⏸️</div>
+                        <div class="event-details">
+                            <h4>Alice Pauses (10 seconds of watching)</h4>
+                            <p>Event: {videoId: abc123, userId: alice, eventType: PAUSE, watchedSeconds: 10}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item bob-event">
+                        <div class="event-time">12:00:15</div>
+                        <div class="event-icon">⏭️</div>
+                        <div class="event-details">
+                            <h4>Bob Seeks to 5 Minutes</h4>
+                            <p>Event: {videoId: abc123, userId: bob, eventType: SEEK, watchedSeconds: 300}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item alice-event">
+                        <div class="event-time">12:00:20</div>
+                        <div class="event-icon">▶️</div>
+                        <div class="event-details">
+                            <h4>Alice Resumes Playing</h4>
+                            <p>Event: {videoId: abc123, userId: alice, eventType: PLAY, ts: 12:00:20}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item bob-event">
+                        <div class="event-time">12:00:30</div>
+                        <div class="event-icon">⏸️</div>
+                        <div class="event-details">
+                            <h4>Bob Pauses (30 seconds of watching)</h4>
+                            <p>Event: {videoId: abc123, userId: bob, eventType: PAUSE, watchedSeconds: 30}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item alice-event">
+                        <div class="event-time">12:01:00</div>
+                        <div class="event-icon">🏁</div>
+                        <div class="event-details">
+                            <h4>Alice Video Ends (watched 60 seconds)</h4>
+                            <p>Event: {videoId: abc123, userId: alice, eventType: ENDED, watchedSeconds: 60}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-item bob-event">
+                        <div class="event-time">12:01:15</div>
+                        <div class="event-icon">🏁</div>
+                        <div class="event-details">
+                            <h4>Bob Video Ends (watched 75 seconds)</h4>
+                            <p>Event: {videoId: abc123, userId: bob, eventType: ENDED, watchedSeconds: 75}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Visualization -->
+            <div class="data-flow-section">
+                <h3 style="margin-bottom: 30px; color: var(--dark); text-align: center;">🔄 How Events Flow Through System</h3>
+                
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-number">1️⃣</div>
+                        <h4>Browser Capture</h4>
+                        <p>React components detect user interactions via HTML5 video element events (onPlay, onPause, onSeek, onEnded)</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="flow-step">
+                        <div class="step-number">2️⃣</div>
+                        <h4>REST API Call</h4>
+                        <p>Frontend sends event to backend via POST /api/events with complete event details</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="flow-step">
+                        <div class="step-number">3️⃣</div>
+                        <h4>Kafka Publish</h4>
+                        <p>Backend publishes event to Kafka topic "video-events" partitioned by videoId for ordering</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="flow-step">
+                        <div class="step-number">4️⃣</div>
+                        <h4>Real-Time Processing</h4>
+                        <p>Kafka consumer reads events sequentially, processes based on type, updates aggregated metrics in DB</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="flow-step">
+                        <div class="step-number">5️⃣</div>
+                        <h4>Database Update</h4>
+                        <p>Metrics stored in video_analytics table with indexes for instant query response</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="flow-step">
+                        <div class="step-number">6️⃣</div>
+                        <h4>Live Dashboard</h4>
+                        <p>Frontend polls every 2 seconds, displays real-time analytics to all users watching video</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final State -->
+            <div class="final-state">
+                <h3 style="margin-bottom: 30px; color: var(--dark); text-align: center;">📊 Final Analytics State (After All Events)</h3>
+                
+                <div class="state-cards">
+                    <div class="state-card aggregated">
+                        <h4>📈 video_analytics Table (Dashboard Metrics)</h4>
+                        <div class="state-content">
+                            <p><strong>video_id:</strong> abc123</p>
+                            <p><strong>total_views:</strong> 2 <span class="metric-note">(Alice + Bob played)</span></p>
+                            <p><strong>play_count:</strong> 3 <span class="metric-note">(Alice: 2, Bob: 1)</span></p>
+                            <p><strong>pause_count:</strong> 2 <span class="metric-note">(Alice: 1, Bob: 1)</span></p>
+                            <p><strong>seek_count:</strong> 1 <span class="metric-note">(Bob seeked once)</span></p>
+                            <p><strong>total_playtime_seconds:</strong> 135 <span class="metric-note">(Alice: 60, Bob: 75)</span></p>
+                            <p><strong>avg_watch_time:</strong> 67.5 sec <span class="metric-note">(135 / 2)</span></p>
+                            <p><strong>play_pause_ratio:</strong> 1.5 <span class="metric-note">(3 plays / 2 pauses)</span></p>
+                            <p><strong>last_updated:</strong> 12:01:15</p>
+                        </div>
+                    </div>
+
+                    <div class="state-card audit">
+                        <h4>📋 video_events Table (Audit Trail)</h4>
+                        <div class="state-content audit-list">
+                            <p><strong>Event 1:</strong> Alice | PLAY | 12:00:00</p>
+                            <p><strong>Event 2:</strong> Bob | PLAY | 12:00:02</p>
+                            <p><strong>Event 3:</strong> Alice | PAUSE | 12:00:10</p>
+                            <p><strong>Event 4:</strong> Bob | SEEK | 12:00:15</p>
+                            <p><strong>Event 5:</strong> Alice | PLAY | 12:00:20</p>
+                            <p><strong>Event 6:</strong> Bob | PAUSE | 12:00:30</p>
+                            <p><strong>Event 7:</strong> Alice | ENDED | 12:01:00</p>
+                            <p><strong>Event 8:</strong> Bob | ENDED | 12:01:15</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI Display -->
+            <div class="ui-display">
+                <h3 style="margin-bottom: 30px; color: var(--dark); text-align: center;">🖥️ How It Appears in User Dashboards</h3>
+                
+                <div class="dashboard-comparison">
+                    <div class="dashboard-view alice-dashboard">
+                        <div class="dashboard-header">Alice's Browser</div>
+                        <div class="dashboard-body">
+                            <div class="video-section">
+                                <h4>📺 Video: Learn Kafka Basics</h4>
+                                <p class="video-time">1:45 / 30:00 (6% watched)</p>
+                            </div>
+                            <div class="analytics-section">
+                                <h4>📊 Live Analytics</h4>
+                                <div class="metric">
+                                    <span class="metric-name">Total Views</span>
+                                    <span class="metric-number">2</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-name">Avg Watch Time</span>
+                                    <span class="metric-number">1m 8s</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-name">Play/Pause Ratio</span>
+                                    <span class="metric-number">1.5</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-name">Last Activity</span>
+                                    <span class="metric-number">12:01:15</span>
+                                </div>
+                                <p class="updated-note">Last updated: 12:01:16 (real-time)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-view bob-dashboard">
+                        <div class="dashboard-header">Bob's Browser</div>
+                        <div class="dashboard-body">
+                            <div class="video-section">
+                                <h4>📺 Video: Learn Kafka Basics</h4>
+                                <p class="video-time">5:45 / 30:00 (19% watched)</p>
+                            </div>
+                            <div class="analytics-section">
+                                <h4>📊 Live Analytics</h4>
+                                <div class="metric">
+                                    <span class="metric-name">Total Views</span>
+                                    <span class="metric-number">2</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-name">Avg Watch Time</span>
+                                    <span class="metric-number">1m 8s</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-name">Play/Pause Ratio</span>
+                                    <span class="metric-number">1.5</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-name">Last Activity</span>
+                                    <span class="metric-number">12:01:15</span>
+                                </div>
+                                <p class="updated-note">Last updated: 12:01:16 (real-time)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <p><strong>💡 Key Insight:</strong> Both users see the SAME aggregated metrics because the analytics are computed server-side 
+                    from Kafka events. Individual actions are tracked in audit log but displayed as unified platform metrics. This is the power of 
+                    event-driven architecture - every action creates an immutable record, and metrics aggregate across all users in real-time!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Identification Section -->
+        <div class="user-identification-section">
+            <h2 style="text-align: center; color: var(--dark); margin-bottom: 40px; font-size: 2.5em;">🔐 How System Identifies & Tracks Individual Users</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; margin-bottom: 40px; max-width: 1000px; margin-left: auto; margin-right: auto;">
+                The system uses a unique userId attached to every event. This "golden thread" runs through the entire architecture, ensuring each user's 
+                actions are tracked individually while allowing aggregated metrics across all users.
+            </p>
+
+            <!-- Flow Diagram -->
+            <div class="user-flow-diagram">
+                <h3 style="margin-bottom: 30px; color: var(--dark); text-align: center;">📌 Complete User Identification Journey</h3>
+                
+                <div class="flow-container">
+                    <div class="flow-box frontend">
+                        <div class="flow-title">🖥️ FRONTEND (React)</div>
+                        <div class="flow-content">
+                            <p><strong>Step 1: Generate User ID</strong></p>
+                            <div class="code-snippet">
+import { v4 as uuidv4 } from 'uuid';
+
+const [userId] = useState(uuidv4());
+// Result: userId = "alice-550e8400"
+                            </div>
+                            <p class="flow-note">Generated when app loads, persists for session</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-divider">↓</div>
+
+                    <div class="flow-box event-capture">
+                        <div class="flow-title">🎬 EVENT CAPTURE</div>
+                        <div class="flow-content">
+                            <p><strong>Step 2: Create Event With User ID</strong></p>
+                            <div class="code-snippet">
+onClick PLAY:
+event = {
+  videoId: "abc123",
+  userId: "alice-550e8400",  ← UNIQUE USER ID
+  eventType: "PLAY",
+  timestamp: "12:00:00"
+}
+                            </div>
+                            <p class="flow-note">Every event has userId attached</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-divider">↓</div>
+
+                    <div class="flow-box api">
+                        <div class="flow-title">📡 API CALL</div>
+                        <div class="flow-content">
+                            <p><strong>Step 3: Send to Backend</strong></p>
+                            <div class="code-snippet">
+POST /api/events
+Content-Type: application/json
+{
+  "videoId": "abc123",
+  "userId": "alice-550e8400",  ← SENT HERE
+  "eventType": "PLAY"
+}
+                            </div>
+                            <p class="flow-note">userId included in request body</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-divider">↓</div>
+
+                    <div class="flow-box backend">
+                        <div class="flow-title">⚙️ BACKEND (Spring Boot)</div>
+                        <div class="flow-content">
+                            <p><strong>Step 4: Backend Receives & Identifies</strong></p>
+                            <div class="code-snippet">
+@PostMapping("/api/events")
+public void publishEvent(
+    @RequestBody VideoEventDTO event
+) {
+    // Backend KNOWS userId from request
+    producer.publishEvent(event);
+    // Knows: This event is from alice-550e8400
+}
+                            </div>
+                            <p class="flow-note">Backend now identifies user from request</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-divider">↓</div>
+
+                    <div class="flow-box kafka">
+                        <div class="flow-title">📨 KAFKA MESSAGE</div>
+                        <div class="flow-content">
+                            <p><strong>Step 5: Publish to Kafka</strong></p>
+                            <div class="code-snippet">
+kafkaTemplate.send("video-events", key, event)
+
+Topic: video-events
+Key: "abc123" (videoId)
+Value: {
+  videoId: "abc123",
+  userId: "alice-550e8400",  ← PRESERVED
+  eventType: "PLAY"
+}
+                            </div>
+                            <p class="flow-note">userId preserved in Kafka message</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-divider">↓</div>
+
+                    <div class="flow-box consumer">
+                        <div class="flow-title">🔄 KAFKA CONSUMER</div>
+                        <div class="flow-content">
+                            <p><strong>Step 6: Consumer Processes Event</strong></p>
+                            <div class="code-snippet">
+@KafkaListener(topics = "video-events")
+public void consumeEvent(VideoEventDTO event) {
+    log.info("Event from userId: {}", 
+        event.getUserId());  // alice-550e8400
+    analyticsService.processEvent(event);
+}
+                            </div>
+                            <p class="flow-note">Consumer knows which user it's from</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-divider">↓</div>
+
+                    <div class="flow-box database">
+                        <div class="flow-title">💾 DATABASE</div>
+                        <div class="flow-content">
+                            <p><strong>Step 7: Store With User ID</strong></p>
+                            <div class="code-snippet">
+INSERT INTO video_events 
+(videoId, userId, eventType, timestamp)
+VALUES 
+('abc123', 'alice-550e8400', 'PLAY', 12:00:00)
+
+UPDATE video_analytics 
+SET total_views = 2
+WHERE videoId = 'abc123'
+                            </div>
+                            <p class="flow-note">Both aggregate & per-user data stored</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Table View -->
+            <div class="user-tracking-tables">
+                <h3 style="margin-bottom: 30px; color: var(--dark); text-align: center;">📊 How Data Is Stored (Two Different Tables)</h3>
+                
+                <div class="tables-comparison">
+                    <div class="table-card audit-table">
+                        <h4>📋 video_events Table (Per-User Audit Trail)</h4>
+                        <p class="table-description">Stores EVERY event from EVERY user. Keeps userId so you know who did what.</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>videoId</th>
+                                    <th>userId</th>
+                                    <th>eventType</th>
+                                    <th>timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="alice-row">
+                                    <td>1</td>
+                                    <td>abc123</td>
+                                    <td class="user-cell">alice-550e8400</td>
+                                    <td>PLAY</td>
+                                    <td>12:00:00</td>
+                                </tr>
+                                <tr class="bob-row">
+                                    <td>2</td>
+                                    <td>abc123</td>
+                                    <td class="user-cell">bob-774ba920</td>
+                                    <td>PLAY</td>
+                                    <td>12:00:02</td>
+                                </tr>
+                                <tr class="alice-row">
+                                    <td>3</td>
+                                    <td>abc123</td>
+                                    <td class="user-cell">alice-550e8400</td>
+                                    <td>PAUSE</td>
+                                    <td>12:00:10</td>
+                                </tr>
+                                <tr class="bob-row">
+                                    <td>4</td>
+                                    <td>abc123</td>
+                                    <td class="user-cell">bob-774ba920</td>
+                                    <td>SEEK</td>
+                                    <td>12:00:15</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="table-note">✅ Can query by userId to get one user's history</p>
+                    </div>
+
+                    <div class="table-card metrics-table">
+                        <h4>📈 video_analytics Table (Aggregated Metrics)</h4>
+                        <p class="table-description">Stores aggregated metrics across ALL users. userId is NOT stored here.</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>videoId</th>
+                                    <th>total_views</th>
+                                    <th>play_count</th>
+                                    <th>pause_count</th>
+                                    <th>avg_watch_time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="aggregated-row">
+                                    <td>abc123</td>
+                                    <td class="metric-value">2</td>
+                                    <td class="metric-value">3</td>
+                                    <td class="metric-value">2</td>
+                                    <td class="metric-value">67.5s</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="table-note">✅ Same for all users (no userId column)</p>
+                    </div>
+                </div>
+
+                <div class="table-insight">
+                    <p><strong>🎯 Why Two Tables?</strong></p>
+                    <ul>
+                        <li><strong>video_events:</strong> Keep detailed history for each user, compliance, ML training</li>
+                        <li><strong>video_analytics:</strong> Quick metrics queries for dashboards (aggregated, faster)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Query Examples -->
+            <div class="query-examples">
+                <h3 style="margin-bottom: 30px; color: var(--dark); text-align: center;">🔍 Example Queries: How userId Enables Different Queries</h3>
+                
+                <div class="query-cards">
+                    <div class="query-card">
+                        <h4>❌ Get Only Alice's Events</h4>
+                        <div class="query-code">
+SELECT * FROM video_events
+WHERE videoId = 'abc123' 
+  AND userId = 'alice-550e8400'
+ORDER BY timestamp;
+
+Result: Events 1, 3 (Alice's PLAY, PAUSE)
+                        </div>
+                        <p class="query-use">Use: Show Alice her personal watch history</p>
+                    </div>
+
+                    <div class="query-card">
+                        <h4>❌ Get Only Bob's Events</h4>
+                        <div class="query-code">
+SELECT * FROM video_events
+WHERE videoId = 'abc123' 
+  AND userId = 'bob-774ba920'
+ORDER BY timestamp;
+
+Result: Events 2, 4 (Bob's PLAY, SEEK)
+                        </div>
+                        <p class="query-use">Use: Show Bob his personal watch history</p>
+                    </div>
+
+                    <div class="query-card">
+                        <h4>✅ Get All Events for Video</h4>
+                        <div class="query-code">
+SELECT * FROM video_events
+WHERE videoId = 'abc123'
+ORDER BY timestamp;
+
+Result: Events 1, 2, 3, 4 (all users)
+                        </div>
+                        <p class="query-use">Use: Audit trail for compliance/debugging</p>
+                    </div>
+
+                    <div class="query-card">
+                        <h4>✅ Get Aggregated Metrics</h4>
+                        <div class="query-code">
+SELECT * FROM video_analytics
+WHERE videoId = 'abc123';
+
+Result: total_views=2, play_count=3
+(userId is NOT in results)
+                        </div>
+                        <p class="query-use">Use: Show dashboard metrics (same for all users)</p>
+                    </div>
+
+                    <div class="query-card">
+                        <h4>❌ Count Events by User</h4>
+                        <div class="query-code">
+SELECT userId, COUNT(*) as event_count
+FROM video_events
+WHERE videoId = 'abc123'
+GROUP BY userId;
+
+Result: 
+- alice-550e8400: 2 events
+- bob-774ba920: 2 events
+                        </div>
+                        <p class="query-use">Use: Understand per-user engagement</p>
+                    </div>
+
+                    <div class="query-card">
+                        <h4>❌ Find Pause Points (All Users)</h4>
+                        <div class="query-code">
+SELECT userId, timestamp, watchedSeconds
+FROM video_events
+WHERE videoId = 'abc123' 
+  AND eventType = 'PAUSE';
+
+Result: Where did users pause?
+(shows per-user behavior)
+                        </div>
+                        <p class="query-use">Use: Identify hard sections in video</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why This Matters -->
+            <div class="why-matters-box">
+                <h3 style="text-align: center; margin-bottom: 25px; color: var(--dark);">🌟 Why userId Is Crucial (The "Golden Thread")</h3>
+                
+                <div class="matters-grid">
+                    <div class="matter-card">
+                        <h4>📊 Analytics</h4>
+                        <p>Aggregate metrics from all users. Total views = sum of all plays from all userIds</p>
+                    </div>
+                    <div class="matter-card">
+                        <h4>👤 User Experience</h4>
+                        <p>Show each user their personal history and recommendations based on their userId</p>
+                    </div>
+                    <div class="matter-card">
+                        <h4>🔍 Debugging</h4>
+                        <p>If a user reports issue, query by userId to see exactly what they did</p>
+                    </div>
+                    <div class="matter-card">
+                        <h4>🤖 Machine Learning</h4>
+                        <p>Train recommendation engines using per-user patterns from userId tracking</p>
+                    </div>
+                    <div class="matter-card">
+                        <h4>📋 Compliance</h4>
+                        <p>Audit trail with userId ensures you know exactly who did what (GDPR, etc.)</p>
+                    </div>
+                    <div class="matter-card">
+                        <h4>🎯 Personalization</h4>
+                        <p>userId enables personalized experiences: "You paused at 5 min, need help?"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Clarity -->
+            <div class="final-clarity-box">
+                <h3 style="margin-bottom: 20px; color: var(--dark);">✨ Final Clarity: Why Both See "Total Views: 2"</h3>
+                
+                <div class="clarity-content">
+                    <p>
+                        <strong>Alice's Dashboard:</strong><br>
+                        She sees "Total Views: 2" because the backend queries video_analytics table (NO userId filter).
+                        This returns aggregated count from ALL users who watched.
+                    </p>
+                    <br>
+                    <p>
+                        <strong>Bob's Dashboard:</strong><br>
+                        He also sees "Total Views: 2" - same query, same table, same result.
+                        Both are shown platform-wide metrics, not personal metrics.
+                    </p>
+                    <br>
+                    <p>
+                        <strong>Behind The Scenes:</strong><br>
+                        Individual events ARE tracked with userId in video_events table. But when displaying 
+                        "Total Views", the dashboard queries video_analytics which has already aggregated 
+                        all user events into one metric. The userId identification enables the aggregation 
+                        to work correctly!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <h2>🎯 Project Objectives & Outcomes</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h3>🏗️ Architecture</h3>
+                    <p>Build industry-level event streaming pipeline with Kafka, Spring Boot, and React</p>
+                </div>
+                <div class="summary-item">
+                    <h3>💻 Full-Stack</h3>
+                    <p>Complete implementation from frontend UI to backend processing and database</p>
+                </div>
+                <div class="summary-item">
+                    <h3>⚡ Real-Time</h3>
+                    <p>Real-time data aggregation and analytics dashboard with live updates</p>
+                </div>
+                <div class="summary-item">
+                    <h3>📈 Scalable</h3>
+                    <p>Production-ready system handling 10K+ events per second</p>
+                </div>
+                <div class="summary-item">
+                    <h3>🔒 Resilient</h3>
+                    <p>Error handling, retries, and recovery mechanisms built-in</p>
+                </div>
+                <div class="summary-item">
+                    <h3>📚 Documented</h3>
+                    <p>Comprehensive documentation, API specs, and deployment guides</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phases Container -->
+        <div class="phases-container" id="phasesContainer"></div>
+
+        <!-- Bottom Statistics -->
+        <div class="bottom-stats">
+            <div class="stat-box">
+                <h3>🚀 Technology Stack</h3>
+                <div class="big-number">8+</div>
+                <p style="margin-top: 10px; color: #666;">Major Technologies & Frameworks</p>
+            </div>
+            <div class="stat-box">
+                <h3>⏱️ Estimated Duration</h3>
+                <div class="big-number">4-6</div>
+                <p style="margin-top: 10px; color: #666;">Weeks of Development</p>
+            </div>
+            <div class="stat-box">
+                <h3>🎓 Skill Level</h3>
+                <div class="big-number">Mid+</div>
+                <p style="margin-top: 10px; color: #666;">Target Proficiency Level</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h2>🌟 What You'll Master</h2>
+            <p>✅ Event-Driven Architecture Patterns</p>
+            <p>✅ Kafka Producer/Consumer Implementation</p>
+            <p>✅ Real-Time Data Aggregation & Analytics</p>
+            <p>✅ Spring Boot Microservices Development</p>
+            <p>✅ Database Design & Optimization</p>
+            <p>✅ Full-Stack Application Development</p>
+            <p>✅ Production Deployment & Monitoring</p>
+            <div class="tech-badges">
+                <span class="badge">☕ Java 17+</span>
+                <span class="badge">🍃 Spring Boot</span>
+                <span class="badge">📨 Apache Kafka</span>
+                <span class="badge">⚛️ React 18+</span>
+                <span class="badge">🐘 PostgreSQL</span>
+                <span class="badge">🐳 Docker</span>
+                <span class="badge">🔧 REST API</span>
+                <span class="badge">🧪 JUnit 5</span>
+            </div>
+            <p style="margin-top: 30px; font-size: 0.95em; opacity: 0.8;">
+                Perfect for FAANG Interview Preparation & Building Production-Grade Systems
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Phase data structure
+        const phasesData = [
+            {
+                id: 1,
+                title: "Project Planning & Architecture Setup",
+                icon: "📋",
+                sections: [
+                    { title: "1.1 Understand Project Architecture", items: [
+                        "Read Apache Kafka documentation on topics, partitions, and consumer groups",
+                        "Draw architecture diagram: Frontend → REST API → Kafka Producer",
+                        "Research event-driven architecture patterns",
+                        "Document data flow: video event → JSON → Kafka topic",
+                        "List event types: PLAY, PAUSE, SEEK, QUALITY_CHANGE, ENDED",
+                        "Define analytics metrics: total_views, avg_watch_time, play_pause_ratio"
+                    ]},
+                    { title: "1.2 System Design Decisions", items: [
+                        "Decide Kafka topic partitioning strategy",
+                        "Choose consumer group strategy",
+                        "Define data retention policy",
+                        "Plan database schema with tables",
+                        "Document expected load capacity"
+                    ]},
+                    { title: "1.3 Technology Stack Finalization", items: [
+                        "Backend: Java 17+, Spring Boot 3.x, Spring Kafka",
+                        "Frontend: React 18+, Axios, WebSocket",
+                        "Database: PostgreSQL 14+",
+                        "Containerization: Docker, Docker Compose",
+                        "Testing & Version Control"
+                    ]}
+                ]
+            },
+            {
+                id: 2,
+                title: "Environment & Infrastructure Setup",
+                icon: "🛠️",
+                sections: [
+                    { title: "2.1 Install Required Tools", items: [
+                        "Download and install Docker Desktop",
+                        "Install Docker Compose and verify",
+                        "Install Java JDK 17+, Maven, Node.js",
+                        "Install Git and VS Code with extensions",
+                        "Verify all installations with version commands"
+                    ]},
+                    { title: "2.2 Create Project Directory Structure", items: [
+                        "Create root folder: video-analytics-platform",
+                        "Create subdirectories: backend, frontend, docker, docs, scripts",
+                        "Initialize Git repository",
+                        "Create .gitignore file"
+                    ]},
+                    { title: "2.3 Create Docker Compose Configuration", items: [
+                        "Configure Zookeeper service",
+                        "Configure Kafka broker",
+                        "Configure PostgreSQL database",
+                        "Optional: Add pgAdmin for visualization",
+                        "Test docker-compose: run docker-compose up -d"
+                    ]},
+                    { title: "2.4 Verify All Services", items: [
+                        "Connect to Kafka and list topics",
+                        "Connect to PostgreSQL and run test query",
+                        "Verify all containers are running",
+                        "Check Kafka readiness"
+                    ]}
+                ]
+            },
+            {
+                id: 3,
+                title: "Backend Setup - Spring Boot Project",
+                icon: "⚙️",
+                sections: [
+                    { title: "3.1 Create Spring Boot Project", items: [
+                        "Visit start.spring.io and configure project",
+                        "Add dependencies: Web, Data JPA, PostgreSQL, Kafka, Lombok",
+                        "Generate and download project zip",
+                        "Extract to backend/ directory",
+                        "Verify project structure"
+                    ]},
+                    { title: "3.2 Configure Application Properties", items: [
+                        "Add PostgreSQL configuration",
+                        "Add Kafka bootstrap servers",
+                        "Configure producer/consumer serializers",
+                        "Set server port to 8080",
+                        "Test application startup"
+                    ]},
+                    { title: "3.3 Create Project Package Structure", items: [
+                        "Create config, controller, service packages",
+                        "Create producer, consumer, repository packages",
+                        "Create entity, dto, exception, util packages",
+                        "Verify folder structure in IDE"
+                    ]}
+                ]
+            },
+            {
+                id: 4,
+                title: "Database Schema & Entity Setup",
+                icon: "🗄️",
+                sections: [
+                    { title: "4.1 Design Database Tables", items: [
+                        "Create Video entity with id, title, duration, uploadedAt",
+                        "Create VideoEvent entity with videoId, userId, eventType, timestamp",
+                        "Create VideoAnalytics entity with metrics",
+                        "Define foreign keys and constraints"
+                    ]},
+                    { title: "4.2 Create JPA Entities", items: [
+                        "Implement Video.java with @Entity annotation",
+                        "Implement VideoEvent.java with enum EventType",
+                        "Implement VideoAnalytics.java with aggregated metrics",
+                        "Add Lombok annotations for getters/setters"
+                    ]},
+                    { title: "4.3 Create DTOs & Enums", items: [
+                        "Create EventType enum with 7 event types",
+                        "Create VideoEventDTO for API requests",
+                        "Create VideoAnalyticsDTO for API responses"
+                    ]},
+                    { title: "4.4 Create JPA Repositories", items: [
+                        "Create VideoRepository",
+                        "Create VideoAnalyticsRepository with top 10 query",
+                        "Create VideoEventRepository with custom queries"
+                    ]},
+                    { title: "4.5 Initialize Sample Data", items: [
+                        "Create DataInitializer with CommandLineRunner",
+                        "Insert 5 sample videos on startup",
+                        "Test by running application"
+                    ]}
+                ]
+            },
+            {
+                id: 5,
+                title: "Kafka Configuration & Producer",
+                icon: "📨",
+                sections: [
+                    { title: "5.1 Create Kafka Configuration", items: [
+                        "Create KafkaProducerConfig with ProducerFactory",
+                        "Create KafkaConsumerConfig with ConsumerFactory",
+                        "Configure serializers and deserializers",
+                        "Test configs by starting application"
+                    ]},
+                    { title: "5.2 Create Kafka Topic Configuration", items: [
+                        "Create KafkaTopicConfig bean",
+                        "Configure 'video-events' topic with 3 partitions",
+                        "Set 7-day retention policy",
+                        "Verify topic creation"
+                    ]},
+                    { title: "5.3 Create Producer Service", items: [
+                        "Implement VideoEventProducer service",
+                        "Add async publish method with callbacks",
+                        "Add sync publish method for testing",
+                        "Write unit tests"
+                    ]},
+                    { title: "5.4 Create REST Controller", items: [
+                        "Create EventController with POST /api/events",
+                        "Add batch endpoint for multiple events",
+                        "Add CORS configuration",
+                        "Test endpoints using Postman"
+                    ]},
+                    { title: "5.5 Test Producer", items: [
+                        "Create POST request in Postman",
+                        "Send video event with all fields",
+                        "Verify HTTP 200 response",
+                        "Check backend logs for published events"
+                    ]}
+                ]
+            },
+            {
+                id: 6,
+                title: "Kafka Consumer & Analytics",
+                icon: "📊",
+                sections: [
+                    { title: "6.1 Create Analytics Service", items: [
+                        "Create VideoAnalyticsService for event processing",
+                        "Implement switch statement for all event types",
+                        "Increment appropriate metrics based on event",
+                        "Add transaction support"
+                    ]},
+                    { title: "6.2 Create Kafka Consumer", items: [
+                        "Create VideoEventConsumer with @KafkaListener",
+                        "Subscribe to 'video-events' topic",
+                        "Join 'video-analytics-group' consumer group",
+                        "Implement error handling"
+                    ]},
+                    { title: "6.3 Create Analytics REST Endpoints", items: [
+                        "Create AnalyticsController",
+                        "Add GET /api/analytics/{videoId} endpoint",
+                        "Add GET /api/analytics/dashboard endpoint",
+                        "Implement DTO conversion logic"
+                    ]},
+                    { title: "6.4 Error Handling", items: [
+                        "Create EventProcessingException",
+                        "Create GlobalExceptionHandler",
+                        "Add retry logic with @Retry annotation"
+                    ]},
+                    { title: "6.5 Test Consumer", items: [
+                        "Send events via Postman",
+                        "Verify database updates",
+                        "Check pgAdmin for data persistence"
+                    ]}
+                ]
+            },
+            {
+                id: 7,
+                title: "Frontend - React Setup & UI",
+                icon: "⚛️",
+                sections: [
+                    { title: "7.1 Create React Application", items: [
+                        "Run npx create-react-app frontend",
+                        "Install axios, chart.js, react-chartjs-2",
+                        "Start dev server on port 3000",
+                        "Verify application loads"
+                    ]},
+                    { title: "7.2 Create Project Structure", items: [
+                        "Create components, pages, services, hooks folders",
+                        "Create utils, styles directories",
+                        "Create .env file with API_URL"
+                    ]},
+                    { title: "7.3 Create API Service Layer", items: [
+                        "Create api.js with axios instance",
+                        "Add publishEvent function",
+                        "Add getAnalytics function",
+                        "Add getDashboard function"
+                    ]},
+                    { title: "7.4 Create Components", items: [
+                        "Create VideoPlayer component with event handlers",
+                        "Create VideoSelector component with sample videos",
+                        "Create AnalyticsDisplay component with auto-refresh",
+                        "Update App.jsx with main layout"
+                    ]},
+                    { title: "7.5 Test Frontend", items: [
+                        "Start React app: npm start",
+                        "Select video and play",
+                        "Watch analytics update in real-time"
+                    ]}
+                ]
+            },
+            {
+                id: 8,
+                title: "Integration Testing",
+                icon: "🧪",
+                sections: [
+                    { title: "8.1 Manual End-to-End Flow", items: [
+                        "Start Docker containers",
+                        "Start backend and frontend",
+                        "Select video and play",
+                        "Watch analytics update in real-time",
+                        "Verify backend logs"
+                    ]},
+                    { title: "8.2 Verify Kafka Topic", items: [
+                        "Exec into Kafka container",
+                        "List topics and verify 'video-events' exists",
+                        "Read messages using kafka-console-consumer"
+                    ]},
+                    { title: "8.3 Verify Database", items: [
+                        "Connect to PostgreSQL",
+                        "Query video_analytics table",
+                        "Query video_events table",
+                        "Verify data updates"
+                    ]},
+                    { title: "8.4 Test Error Scenarios", items: [
+                        "Stop Kafka and test error handling",
+                        "Test with invalid videoId",
+                        "Test with missing fields",
+                        "Verify error responses"
+                    ]},
+                    { title: "8.5 Write Unit Tests", items: [
+                        "Create VideoEventProducerTest",
+                        "Create VideoAnalyticsServiceTest",
+                        "Run tests: mvn test"
+                    ]}
+                ]
+            },
+            {
+                id: 9,
+                title: "Performance & Optimization",
+                icon: "⚡",
+                sections: [
+                    { title: "9.1 Load Testing Setup", items: [
+                        "Install Apache JMeter",
+                        "Create test plan for event publishing",
+                        "Configure 100 thread users, 50 loop count",
+                        "Run load test and analyze results"
+                    ]},
+                    { title: "9.2 Monitor Consumer Lag", items: [
+                        "Enable Spring Boot Actuator metrics",
+                        "Check consumer lag: /actuator/metrics/kafka.consumer.lag",
+                        "Monitor lag during load test",
+                        "Document baseline metrics"
+                    ]},
+                    { title: "9.3 Optimize Producer", items: [
+                        "Configure batch size: 32KB",
+                        "Set linger time: 100ms",
+                        "Add snappy compression",
+                        "Re-run load test and compare"
+                    ]},
+                    { title: "9.4 Optimize Consumer", items: [
+                        "Increase parallelism to 10",
+                        "Set max poll records to 500",
+                        "Monitor improvement in throughput"
+                    ]},
+                    { title: "9.5 Database Optimization", items: [
+                        "Create indexes on frequently queried columns",
+                        "Test query performance with EXPLAIN ANALYZE",
+                        "Document optimization results"
+                    ]}
+                ]
+            },
+            {
+                id: 10,
+                title: "Advanced Features",
+                icon: "🚀",
+                sections: [
+                    { title: "10.1 WebSocket Real-Time Updates", items: [
+                        "Add spring-boot-starter-websocket dependency",
+                        "Create WebSocketConfig",
+                        "Implement AnalyticsWebSocketHandler",
+                        "Update frontend to use WebSocket"
+                    ]},
+                    { title: "10.2 Event Deduplication", items: [
+                        "Implement idempotent consumer",
+                        "Use eventId to detect duplicates",
+                        "Test with duplicate events"
+                    ]},
+                    { title: "10.3 Audit Logging", items: [
+                        "Create audit table in database",
+                        "Implement audit service",
+                        "Log all events with userId, videoId, action, timestamp"
+                    ]},
+                    { title: "10.4 Dashboard Charts", items: [
+                        "Add Chart 1: Total Views Over Time",
+                        "Add Chart 2: Play/Pause Distribution",
+                        "Add Chart 3: Top 5 Videos by Views"
+                    ]},
+                    { title: "10.5 User Analytics", items: [
+                        "Track per-user statistics",
+                        "Create user profile endpoint",
+                        "Implement user analytics dashboard"
+                    ]}
+                ]
+            },
+            {
+                id: 11,
+                title: "Documentation & Deployment",
+                icon: "📚",
+                sections: [
+                    { title: "11.1 Create Documentation", items: [
+                        "Write comprehensive README.md",
+                        "Create ARCHITECTURE.md with diagrams",
+                        "Create API.md with all endpoints",
+                        "Create DEPLOYMENT.md"
+                    ]},
+                    { title: "11.2 Postman Collection", items: [
+                        "Export all API endpoints",
+                        "Include sample requests",
+                        "Add environment variables",
+                        "Share collection link"
+                    ]},
+                    { title: "11.3 Code Quality", items: [
+                        "Run code coverage: mvn jacoco:report",
+                        "Verify coverage > 70%",
+                        "Run SonarQube analysis",
+                        "Fix code smells"
+                    ]},
+                    { title: "11.4 GitHub Setup", items: [
+                        "Create GitHub repository",
+                        "Add .gitignore and LICENSE",
+                        "Push code with clear commits",
+                        "Add GitHub Actions CI/CD"
+                    ]},
+                    { title: "11.5 Deployment Verification", items: [
+                        "Clean all containers: docker-compose down -v",
+                        "Fresh start: docker-compose up -d",
+                        "Test entire application flow",
+                        "Document setup issues"
+                    ]},
+                    { title: "11.6 Create Demo Video", items: [
+                        "Record 3-5 minute demo",
+                        "Show architecture overview",
+                        "Show real-time analytics updating",
+                        "Upload to YouTube or GitHub"
+                    ]}
+                ]
+            },
+            {
+                id: 12,
+                title: "Interview Preparation",
+                icon: "🎓",
+                sections: [
+                    { title: "12.1 Architecture & Design", items: [
+                        "Explain why Kafka instead of REST polling",
+                        "Discuss event-driven vs request-response",
+                        "Explain partition strategy and consumer groups",
+                        "Design decisions: retention, replication",
+                        "Scalability to 1M concurrent users"
+                    ]},
+                    { title: "12.2 Technical Deep Dives", items: [
+                        "Kafka offsets and consumer lag management",
+                        "Exactly-once semantics with idempotence",
+                        "Database denormalization for analytics",
+                        "WebSocket vs polling trade-offs",
+                        "Error handling and retry logic"
+                    ]},
+                    { title: "12.3 Production Considerations", items: [
+                        "Monitoring and observability",
+                        "High availability and disaster recovery",
+                        "Security: authentication, authorization, encryption",
+                        "Performance optimization techniques",
+                        "Operational challenges and learnings"
+                    ]},
+                    { title: "12.4 Interview Questions", items: [
+                        "How would you handle duplicate events from Kafka?",
+                        "What if database writes are slower than consumption?",
+                        "How to migrate to distributed system?",
+                        "What's the maximum throughput?",
+                        "How to ensure exactly-once delivery?"
+                    ]}
+                ]
+            }
+        ];
+
+        // Render phases
+        function renderPhases() {
+            const container = document.getElementById('phasesContainer');
+            
+            phasesData.forEach(phase => {
+                const phaseCard = document.createElement('div');
+                phaseCard.className = 'phase-card';
+                
+                const phaseNum = String(phase.id).padStart(2, '0');
+                const headerClass = `phase-header phase${phase.id}`;
+                
+                let itemsHtml = '';
+                phase.sections.forEach(section => {
+                    itemsHtml += `
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="color: var(--dark); margin: 10px 0 8px 0; font-size: 0.95em;">${section.title}</h4>
+                            <ul class="checklist">
+                                ${section.items.map(item => `
+                                    <li>
+                                        <input type="checkbox" id="${phase.id}-${item}">
+                                        <label for="${phase.id}-${item}">${item}</label>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                });
+                
+                phaseCard.innerHTML = `
+                    <div class="${headerClass}">
+                        <span class="phase-icon">${phase.icon}</span>
+                        <h2>Phase ${phaseNum}</h2>
+                        <span style="font-size: 0.85em; opacity: 0.8;">${phase.sections.length} sections</span>
+                    </div>
+                    <div class="phase-content">
+                        <h3 style="color: var(--dark); margin-bottom: 15px;">${phase.title}</h3>
+                        <div class="phase-items" id="phase-${phase.id}-items">
+                            ${itemsHtml}
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-${phase.id}" style="width: 0%;"></div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; font-size: 0.85em; color: #999;">
+                            <span id="count-${phase.id}">0</span> tasks completed
+                        </p>
+                    </div>
+                `;
+                
+                container.appendChild(phaseCard);
+                
+                // Add event listeners for checkboxes
+                const checkboxes = phaseCard.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => updateProgress(phase.id));
+                });
+            });
+        }
+
+        // Update progress
+        function updateProgress(phaseId) {
+            const checkboxes = document.querySelectorAll(`#phase-${phaseId}-items input[type="checkbox"]`);
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const total = checkboxes.length;
+            const percentage = (checked / total) * 100;
+            
+            document.getElementById(`progress-${phaseId}`).style.width = percentage + '%';
+            document.getElementById(`count-${phaseId}`).textContent = checked;
+            
+            // Save to localStorage
+            localStorage.setItem(`phase-${phaseId}-progress`, JSON.stringify(
+                Array.from(checkboxes).map((cb, i) => cb.checked)
+            ));
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            phasesData.forEach(phase => {
+                const saved = localStorage.getItem(`phase-${phase.id}-progress`);
+                if (saved) {
+                    const states = JSON.parse(saved);
+                    const checkboxes = document.querySelectorAll(`#phase-${phase.id}-items input[type="checkbox"]`);
+                    checkboxes.forEach((cb, i) => {
+                        if (states[i]) cb.checked = true;
+                    });
+                    updateProgress(phase.id);
+                }
+            });
+        }
+
+        // Initialize
+        renderPhases();
+        setTimeout(loadProgress, 100);
+    </script>
+</body>
+</html>

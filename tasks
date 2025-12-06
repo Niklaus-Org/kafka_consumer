@@ -1,0 +1,1075 @@
+# Real-Time Video Engagement Analytics Platform
+## Complete Step-by-Step Project Checklist
+
+---
+
+## **PHASE 1: Project Planning & Architecture Setup**
+
+### 1.1 Understand Project Architecture
+- [ ] Read Apache Kafka documentation on topics, partitions, and consumer groups
+- [ ] Draw architecture diagram: Frontend â†’ REST API â†’ Kafka Producer â†’ Kafka Broker â†’ Kafka Consumer â†’ Database
+- [ ] Research event-driven architecture patterns and their benefits
+- [ ] Document data flow: video event â†’ JSON â†’ Kafka topic â†’ processed analytics
+- [ ] List all event types: PLAY, PAUSE, SEEK, QUALITY_CHANGE, ENDED, BUFFER_START, BUFFER_END
+- [ ] Define analytics metrics: total_views, avg_watch_time, play_pause_ratio, popular_videos
+
+### 1.2 System Design Decisions
+- [ ] Decide Kafka topic partitioning: partition by videoId (ensures all events for a video go to same partition)
+- [ ] Choose consumer group strategy: single group for analytics aggregation
+- [ ] Define data retention policy: 7 days for Kafka topics, indefinite for PostgreSQL
+- [ ] Plan database schema with tables: videos, events_log, analytics_metrics
+- [ ] Document expected load: start with 100 events/second, scale to 10,000+
+
+### 1.3 Technology Stack Finalization
+- [ ] Backend: Java 17+, Spring Boot 3.x, Spring Kafka, Spring Data JPA
+- [ ] Frontend: React 18+, Axios for HTTP, WebSocket for real-time updates
+- [ ] Database: PostgreSQL 14+
+- [ ] Messaging: Apache Kafka 3.x
+- [ ] Containerization: Docker, Docker Compose
+- [ ] Testing: JUnit 5, Mockito (backend), Jest (frontend)
+- [ ] Version control: Git, GitHub
+
+---
+
+## **PHASE 2: Environment & Infrastructure Setup**
+
+### 2.1 Install Required Tools
+- [ ] Download and install Docker Desktop from docker.com
+- [ ] Verify Docker installation: run `docker --version` in terminal
+- [ ] Install Docker Compose: run `docker-compose --version`
+- [ ] Install Java JDK 17+: verify with `java -version`
+- [ ] Install Maven: verify with `mvn --version`
+- [ ] Install Node.js 18+ and npm: verify with `node --version` and `npm --version`
+- [ ] Install Git: verify with `git --version`
+- [ ] Install VS Code and extensions: Spring Boot Extension Pack, REST Client, Docker
+
+### 2.2 Create Project Directory Structure
+- [ ] Create root folder: `video-analytics-platform`
+- [ ] Create subdirectories:
+  - [ ] `backend/` - Spring Boot application
+  - [ ] `frontend/` - React application
+  - [ ] `docker/` - Docker configuration files
+  - [ ] `docs/` - Project documentation
+  - [ ] `scripts/` - Helper scripts for testing
+- [ ] Initialize Git repository: `git init`
+- [ ] Create `.gitignore` file with Java, Node, and IDE patterns
+
+### 2.3 Create Docker Compose Configuration
+- [ ] Create `docker-compose.yml` in project root with services:
+  - [ ] **Zookeeper**: image `confluentinc/cp-zookeeper:7.x`
+    - [ ] Set ZOOKEEPER_CLIENT_PORT=2181
+    - [ ] Set ZOOKEEPER_SYNC_LIMIT=2
+  - [ ] **Kafka**: image `confluentinc/cp-kafka:7.x`
+    - [ ] Set KAFKA_BROKER_ID=1
+    - [ ] Set KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    - [ ] Set KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    - [ ] Set KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    - [ ] Set KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+  - [ ] **PostgreSQL**: image `postgres:15-alpine`
+    - [ ] Set POSTGRES_USER=admin
+    - [ ] Set POSTGRES_PASSWORD=admin123
+    - [ ] Set POSTGRES_DB=video_analytics
+  - [ ] **pgAdmin** (optional): image `dpage/pgadmin4` for database visualization
+- [ ] Define networks: all services on `kafka-network`
+- [ ] Define volumes: PostgreSQL data persistence
+- [ ] Test docker-compose: run `docker-compose up -d`
+- [ ] Verify all containers are running: `docker ps`
+- [ ] Check Kafka is ready: `docker logs kafka-container-name`
+
+### 2.4 Verify All Services
+- [ ] Connect to Kafka: `docker exec -it kafka bash`
+- [ ] List Kafka topics: `kafka-topics --list --bootstrap-server localhost:9092`
+- [ ] Connect to PostgreSQL: `docker exec -it postgres psql -U admin -d video_analytics`
+- [ ] Run test query: `SELECT version();`
+- [ ] Exit all connections and verify services are stable
+
+---
+
+## **PHASE 3: Backend Setup - Spring Boot Project**
+
+### 3.1 Create Spring Boot Project
+- [ ] Visit https://start.spring.io
+- [ ] Project type: Maven Project
+- [ ] Language: Java
+- [ ] Spring Boot version: 3.2.x (latest stable)
+- [ ] Group: `com.videoanalytics`
+- [ ] Artifact: `backend`
+- [ ] Packaging: Jar
+- [ ] Java version: 17+
+- [ ] Add dependencies:
+  - [ ] Spring Web
+  - [ ] Spring Data JPA
+  - [ ] PostgreSQL Driver
+  - [ ] Spring for Apache Kafka
+  - [ ] Lombok
+  - [ ] Validation
+  - [ ] Spring Boot DevTools
+- [ ] Generate and download project zip
+- [ ] Extract to `backend/` directory
+- [ ] Verify project structure: `src/main/java`, `src/main/resources`, `pom.xml`
+
+### 3.2 Configure Application Properties
+- [ ] Open `src/main/resources/application.properties`
+- [ ] Add PostgreSQL configuration:
+  ```
+  spring.datasource.url=jdbc:postgresql://localhost:5432/video_analytics
+  spring.datasource.username=admin
+  spring.datasource.password=admin123
+  spring.jpa.hibernate.ddl-auto=create-drop
+  spring.jpa.show-sql=true
+  ```
+- [ ] Add Kafka configuration:
+  ```
+  spring.kafka.bootstrap-servers=localhost:9092
+  spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+  spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+  spring.kafka.consumer.bootstrap-servers=localhost:9092
+  spring.kafka.consumer.group-id=video-analytics-group
+  spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+  spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
+  spring.kafka.consumer.properties.spring.json.trusted.packages=*
+  ```
+- [ ] Add server configuration:
+  ```
+  server.port=8080
+  logging.level.root=INFO
+  logging.level.com.videoanalytics=DEBUG
+  ```
+- [ ] Test application startup: `mvn spring-boot:run`
+- [ ] Verify: `http://localhost:8080/actuator/health` returns UP
+
+### 3.3 Create Project Package Structure
+- [ ] Create packages under `src/main/java/com/videoanalytics/`:
+  - [ ] `config/` - Configuration classes
+  - [ ] `controller/` - REST endpoints
+  - [ ] `service/` - Business logic
+  - [ ] `producer/` - Kafka producer logic
+  - [ ] `consumer/` - Kafka consumer logic
+  - [ ] `repository/` - Database repositories
+  - [ ] `entity/` - JPA entities
+  - [ ] `dto/` - Data Transfer Objects
+  - [ ] `exception/` - Custom exceptions
+  - [ ] `util/` - Utility classes
+- [ ] Verify folder structure in IDE
+
+---
+
+## **PHASE 4: Database Schema & Entity Setup**
+
+### 4.1 Design Database Tables
+- [ ] Create entity: `Video`
+  - [ ] Fields: id (UUID), title (String), duration (Integer), uploadedAt (LocalDateTime)
+  - [ ] Annotations: @Entity, @Table, @Getter, @Setter, @NoArgsConstructor
+- [ ] Create entity: `VideoEvent`
+  - [ ] Fields: id (UUID), videoId (UUID), userId (UUID), eventType (Enum), timestamp (LocalDateTime), metadata (JSON/Map)
+  - [ ] Foreign key: videoId â†’ Video.id
+- [ ] Create entity: `VideoAnalytics`
+  - [ ] Fields: videoId (UUID - Primary Key), totalViews (Long), totalPlaytime (Long), playCount (Long), pauseCount (Long), seekCount (Long), lastUpdated (LocalDateTime)
+  - [ ] Unique constraint: videoId
+
+### 4.2 Create JPA Entities
+- [ ] Create `src/main/java/com/videoanalytics/entity/Video.java`:
+  ```java
+  @Entity
+  @Table(name = "videos")
+  @Getter @Setter @NoArgsConstructor
+  public class Video {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private String title;
+    private Integer durationSeconds;
+    @CreationTimestamp
+    private LocalDateTime uploadedAt;
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/entity/VideoEvent.java`:
+  ```java
+  @Entity
+  @Table(name = "video_events")
+  @Getter @Setter @NoArgsConstructor
+  public class VideoEvent {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private UUID videoId;
+    private UUID userId;
+    @Enumerated(EnumType.STRING)
+    private EventType eventType;
+    private LocalDateTime timestamp;
+    private String metadata;
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/entity/VideoAnalytics.java`:
+  ```java
+  @Entity
+  @Table(name = "video_analytics")
+  @Getter @Setter @NoArgsConstructor
+  public class VideoAnalytics {
+    @Id
+    private UUID videoId;
+    private Long totalViews = 0L;
+    private Long totalPlaytimeSeconds = 0L;
+    private Long playCount = 0L;
+    private Long pauseCount = 0L;
+    private Long seekCount = 0L;
+    @UpdateTimestamp
+    private LocalDateTime lastUpdated;
+  }
+  ```
+
+### 4.3 Create Enums and DTOs
+- [ ] Create `src/main/java/com/videoanalytics/dto/EventType.java`:
+  ```java
+  public enum EventType {
+    PLAY, PAUSE, SEEK, QUALITY_CHANGE, ENDED, BUFFER_START, BUFFER_END
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/dto/VideoEventDTO.java`:
+  ```java
+  @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+  public class VideoEventDTO {
+    private UUID videoId;
+    private UUID userId;
+    private EventType eventType;
+    private Long watchedSeconds;
+    private String qualityLevel;
+    private LocalDateTime timestamp;
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/dto/VideoAnalyticsDTO.java`:
+  ```java
+  @Getter @Setter
+  public class VideoAnalyticsDTO {
+    private UUID videoId;
+    private Long totalViews;
+    private Double avgWatchTimeSeconds;
+    private Double playPauseRatio;
+  }
+  ```
+
+### 4.4 Create JPA Repositories
+- [ ] Create `src/main/java/com/videoanalytics/repository/VideoRepository.java`:
+  ```java
+  @Repository
+  public interface VideoRepository extends JpaRepository<Video, UUID> {
+    Optional<Video> findByTitle(String title);
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/repository/VideoAnalyticsRepository.java`:
+  ```java
+  @Repository
+  public interface VideoAnalyticsRepository extends JpaRepository<VideoAnalytics, UUID> {
+    List<VideoAnalytics> findTop10ByOrderByTotalViewsDesc();
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/repository/VideoEventRepository.java`:
+  ```java
+  @Repository
+  public interface VideoEventRepository extends JpaRepository<VideoEvent, UUID> {
+    List<VideoEvent> findByVideoId(UUID videoId);
+    List<VideoEvent> findByUserIdAndEventType(UUID userId, EventType eventType);
+  }
+  ```
+
+### 4.5 Initialize Sample Data
+- [ ] Create `src/main/java/com/videoanalytics/config/DataInitializer.java`
+- [ ] Implement CommandLineRunner to insert 5 sample videos on startup:
+  - [ ] Video 1: "Learn Kafka Basics" (600 seconds)
+  - [ ] Video 2: "Spring Boot Tutorial" (1800 seconds)
+  - [ ] Video 3: "Kafka in Production" (2400 seconds)
+  - [ ] Video 4: "Database Design" (1200 seconds)
+  - [ ] Video 5: "Microservices Architecture" (3000 seconds)
+- [ ] Test by running application and checking PostgreSQL data
+
+---
+
+## **PHASE 5: Kafka Configuration & Producer**
+
+### 5.1 Create Kafka Configuration
+- [ ] Create `src/main/java/com/videoanalytics/config/KafkaProducerConfig.java`:
+  ```java
+  @Configuration
+  public class KafkaProducerConfig {
+    @Bean
+    public ProducerFactory<String, VideoEventDTO> producerFactory() {
+      Map<String, Object> configProps = new HashMap<>();
+      configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+      configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+      configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+      configProps.put(ProducerConfig.ACKS_CONFIG, "all");
+      configProps.put(ProducerConfig.RETRIES_CONFIG, 3);
+      return new DefaultProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, VideoEventDTO> kafkaTemplate() {
+      return new KafkaTemplate<>(producerFactory());
+    }
+  }
+  ```
+- [ ] Create `src/main/java/com/videoanalytics/config/KafkaConsumerConfig.java`:
+  ```java
+  @Configuration
+  public class KafkaConsumerConfig {
+    @Bean
+    public ConsumerFactory<String, VideoEventDTO> consumerFactory() {
+      Map<String, Object> props = new HashMap<>();
+      props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+      props.put(ConsumerConfig.GROUP_ID_CONFIG, "video-analytics-group");
+      props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+      props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+      props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, VideoEventDTO.class.getName());
+      props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+      props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+      return new DefaultConsumerFactory<>(props);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, VideoEventDTO> kafkaListenerContainerFactory() {
+      ConcurrentKafkaListenerContainerFactory<String, VideoEventDTO> factory = 
+        new ConcurrentKafkaListenerContainerFactory<>();
+      factory.setConsumerFactory(consumerFactory());
+      return factory;
+    }
+  }
+  ```
+- [ ] Test configs by starting application: `mvn spring-boot:run`
+
+### 5.2 Create Kafka Topic Configuration
+- [ ] Create `src/main/java/com/videoanalytics/config/KafkaTopicConfig.java`:
+  ```java
+  @Configuration
+  public class KafkaTopicConfig {
+    @Bean
+    public NewTopic videoEventsTopic() {
+      return TopicBuilder.name("video-events")
+        .partitions(3)
+        .replicas(1)
+        .config(TopicConfig.RETENTION_MS_CONFIG, "604800000") // 7 days
+        .build();
+    }
+  }
+  ```
+- [ ] Verify topic creation: Connect to Kafka container and list topics
+
+### 5.3 Create Video Event Producer Service
+- [ ] Create `src/main/java/com/videoanalytics/producer/VideoEventProducer.java`:
+  ```java
+  @Service
+  @Slf4j
+  public class VideoEventProducer {
+    @Autowired
+    private KafkaTemplate<String, VideoEventDTO> kafkaTemplate;
+
+    public void publishEvent(VideoEventDTO event) {
+      String key = event.getVideoId().toString();
+      kafkaTemplate.send("video-events", key, event)
+        .addCallback(
+          result -> log.info("Published event: {}", event.getEventType()),
+          ex -> log.error("Failed to publish event", ex)
+        );
+    }
+
+    public void publishEventSync(VideoEventDTO event) throws Exception {
+      String key = event.getVideoId().toString();
+      kafkaTemplate.send("video-events", key, event).get();
+    }
+  }
+  ```
+- [ ] Test producer by writing unit test
+
+### 5.4 Create REST Controller for Events
+- [ ] Create `src/main/java/com/videoanalytics/controller/EventController.java`:
+  ```java
+  @RestController
+  @RequestMapping("/api/events")
+  @Slf4j
+  public class EventController {
+    @Autowired
+    private VideoEventProducer producer;
+
+    @PostMapping
+    public ResponseEntity<String> publishEvent(@RequestBody VideoEventDTO event) {
+      event.setTimestamp(LocalDateTime.now());
+      producer.publishEvent(event);
+      return ResponseEntity.ok("Event published successfully");
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<String> publishBatch(@RequestBody List<VideoEventDTO> events) {
+      events.forEach(event -> {
+        event.setTimestamp(LocalDateTime.now());
+        producer.publishEvent(event);
+      });
+      return ResponseEntity.ok("Batch published successfully");
+    }
+  }
+  ```
+- [ ] Add CORS configuration: `@CrossOrigin(origins = "http://localhost:3000")`
+- [ ] Test endpoint using Postman/curl
+
+### 5.5 Test Producer with Postman
+- [ ] Create POST request: `http://localhost:8080/api/events`
+- [ ] Body:
+  ```json
+  {
+    "videoId": "550e8400-e29b-41d4-a716-446655440000",
+    "userId": "660e8400-e29b-41d4-a716-446655440001",
+    "eventType": "PLAY",
+    "watchedSeconds": 10,
+    "qualityLevel": "1080p",
+    "timestamp": "2025-12-06T22:40:00"
+  }
+  ```
+- [ ] Verify response: HTTP 200 OK
+- [ ] Check backend logs for "Published event: PLAY"
+
+---
+
+## **PHASE 6: Kafka Consumer & Analytics Processing**
+
+### 6.1 Create Video Analytics Service
+- [ ] Create `src/main/java/com/videoanalytics/service/VideoAnalyticsService.java`:
+  ```java
+  @Service
+  @Slf4j
+  public class VideoAnalyticsService {
+    @Autowired
+    private VideoAnalyticsRepository analyticsRepo;
+
+    @Transactional
+    public void processEvent(VideoEventDTO event) {
+      VideoAnalytics analytics = analyticsRepo.findById(event.getVideoId())
+        .orElseGet(() -> {
+          VideoAnalytics newAnalytics = new VideoAnalytics();
+          newAnalytics.setVideoId(event.getVideoId());
+          return newAnalytics;
+        });
+
+      switch (event.getEventType()) {
+        case PLAY:
+          analytics.setPlayCount(analytics.getPlayCount() + 1);
+          analytics.setTotalViews(analytics.getTotalViews() + 1);
+          break;
+        case PAUSE:
+          analytics.setPauseCount(analytics.getPauseCount() + 1);
+          break;
+        case SEEK:
+          analytics.setSeekCount(analytics.getSeekCount() + 1);
+          break;
+        case BUFFER_START:
+        case BUFFER_END:
+        case QUALITY_CHANGE:
+          // No increment for these
+          break;
+        case ENDED:
+          Long watchedSeconds = event.getWatchedSeconds() != null ? event.getWatchedSeconds() : 0;
+          analytics.setTotalPlaytimeSeconds(analytics.getTotalPlaytimeSeconds() + watchedSeconds);
+          break;
+      }
+
+      analyticsRepo.save(analytics);
+      log.debug("Updated analytics for video: {}", event.getVideoId());
+    }
+  }
+  ```
+
+### 6.2 Create Kafka Consumer
+- [ ] Create `src/main/java/com/videoanalytics/consumer/VideoEventConsumer.java`:
+  ```java
+  @Service
+  @Slf4j
+  public class VideoEventConsumer {
+    @Autowired
+    private VideoAnalyticsService analyticsService;
+
+    @KafkaListener(topics = "video-events", groupId = "video-analytics-group")
+    public void consumeEvent(VideoEventDTO event) {
+      try {
+        log.info("Consuming event: VideoId={}, EventType={}", event.getVideoId(), event.getEventType());
+        analyticsService.processEvent(event);
+      } catch (Exception e) {
+        log.error("Error processing event", e);
+      }
+    }
+  }
+  ```
+- [ ] Test consumer by sending events via Postman
+- [ ] Verify database updates using pgAdmin
+
+### 6.3 Create Analytics REST Endpoints
+- [ ] Create `src/main/java/com/videoanalytics/controller/AnalyticsController.java`:
+  ```java
+  @RestController
+  @RequestMapping("/api/analytics")
+  @Slf4j
+  public class AnalyticsController {
+    @Autowired
+    private VideoAnalyticsRepository analyticsRepository;
+
+    @GetMapping("/{videoId}")
+    public ResponseEntity<VideoAnalyticsDTO> getVideoAnalytics(@PathVariable UUID videoId) {
+      return analyticsRepository.findById(videoId)
+        .map(this::convertToDTO)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<Map<String, Object>> getDashboard() {
+      List<VideoAnalytics> topVideos = analyticsRepository.findTop10ByOrderByTotalViewsDesc();
+      Long totalViews = topVideos.stream().mapToLong(VideoAnalytics::getTotalViews).sum();
+      
+      Map<String, Object> dashboard = new HashMap<>();
+      dashboard.put("totalViews", totalViews);
+      dashboard.put("topVideos", topVideos);
+      dashboard.put("videoCount", topVideos.size());
+      
+      return ResponseEntity.ok(dashboard);
+    }
+
+    private VideoAnalyticsDTO convertToDTO(VideoAnalytics analytics) {
+      VideoAnalyticsDTO dto = new VideoAnalyticsDTO();
+      dto.setVideoId(analytics.getVideoId());
+      dto.setTotalViews(analytics.getTotalViews());
+      if (analytics.getPlayCount() > 0) {
+        dto.setAvgWatchTimeSeconds((double) analytics.getTotalPlaytimeSeconds() / analytics.getPlayCount());
+      }
+      if (analytics.getPauseCount() > 0) {
+        dto.setPlayPauseRatio((double) analytics.getPlayCount() / analytics.getPauseCount());
+      }
+      return dto;
+    }
+  }
+  ```
+- [ ] Test endpoints via Postman
+
+### 6.4 Add Error Handling & Retries
+- [ ] Create `src/main/java/com/videoanalytics/exception/EventProcessingException.java`
+- [ ] Create `src/main/java/com/videoanalytics/exception/GlobalExceptionHandler.java`
+  ```java
+  @ControllerAdvice
+  public class GlobalExceptionHandler {
+    @ExceptionHandler(EventProcessingException.class)
+    public ResponseEntity<String> handleEventException(EventProcessingException e) {
+      return ResponseEntity.status(500).body("Event processing failed: " + e.getMessage());
+    }
+  }
+  ```
+- [ ] Add retry logic to consumer using `@Retry` annotation
+
+---
+
+## **PHASE 7: Frontend - React Setup & UI**
+
+### 7.1 Create React Application
+- [ ] Run: `npx create-react-app frontend`
+- [ ] Navigate to frontend: `cd frontend`
+- [ ] Install dependencies:
+  - [ ] `npm install axios` - HTTP client
+  - [ ] `npm install chart.js react-chartjs-2` - Charts
+  - [ ] `npm install ws` - WebSocket (optional for Phase 10)
+- [ ] Start dev server: `npm start`
+- [ ] Verify: http://localhost:3000 opens in browser
+
+### 7.2 Create Project Folder Structure
+- [ ] Create `src/` subdirectories:
+  - [ ] `components/` - React components
+  - [ ] `pages/` - Page components
+  - [ ] `services/` - API calls
+  - [ ] `hooks/` - Custom hooks
+  - [ ] `utils/` - Utility functions
+  - [ ] `styles/` - CSS files
+- [ ] Create `.env` file with backend URL:
+  ```
+  REACT_APP_API_URL=http://localhost:8080
+  ```
+
+### 7.3 Create API Service Layer
+- [ ] Create `src/services/api.js`:
+  ```javascript
+  import axios from 'axios';
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
+  export const api = axios.create({
+    baseURL: API_URL,
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  export const publishEvent = (event) => api.post('/api/events', event);
+  export const getAnalytics = (videoId) => api.get(`/api/analytics/${videoId}`);
+  export const getDashboard = () => api.get('/api/analytics/dashboard');
+  ```
+
+### 7.4 Create Video Player Component
+- [ ] Create `src/components/VideoPlayer.jsx`:
+  ```javascript
+  import React, { useState, useRef } from 'react';
+  import { publishEvent } from '../services/api';
+
+  export default function VideoPlayer({ videoId, userId }) {
+    const videoRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const sendEvent = (eventType) => {
+      publishEvent({
+        videoId: videoId,
+        userId: userId,
+        eventType: eventType,
+        watchedSeconds: videoRef.current?.currentTime || 0,
+        qualityLevel: '1080p'
+      }).catch(err => console.error('Error publishing event:', err));
+    };
+
+    const handlePlay = () => {
+      setIsPlaying(true);
+      sendEvent('PLAY');
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+      sendEvent('PAUSE');
+    };
+
+    const handleSeek = () => sendEvent('SEEK');
+    const handleEnded = () => sendEvent('ENDED');
+
+    return (
+      <div>
+        <video
+          ref={videoRef}
+          width="100%"
+          controls
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onSeeked={handleSeek}
+          onEnded={handleEnded}
+        >
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+        </video>
+      </div>
+    );
+  }
+  ```
+
+### 7.5 Create Video Selector Component
+- [ ] Create `src/components/VideoSelector.jsx`:
+  ```javascript
+  import React, { useState } from 'react';
+
+  const SAMPLE_VIDEOS = [
+    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Learn Kafka Basics' },
+    { id: '550e8400-e29b-41d4-a716-446655440001', title: 'Spring Boot Tutorial' },
+    { id: '550e8400-e29b-41d4-a716-446655440002', title: 'Kafka in Production' }
+  ];
+
+  export default function VideoSelector({ onSelect }) {
+    return (
+      <div>
+        <h3>Select Video</h3>
+        {SAMPLE_VIDEOS.map(video => (
+          <button key={video.id} onClick={() => onSelect(video.id)}>
+            {video.title}
+          </button>
+        ))}
+      </div>
+    );
+  }
+  ```
+
+### 7.6 Create Analytics Display Component
+- [ ] Create `src/components/AnalyticsDisplay.jsx`:
+  ```javascript
+  import React, { useState, useEffect } from 'react';
+  import { getAnalytics } from '../services/api';
+
+  export default function AnalyticsDisplay({ videoId }) {
+    const [analytics, setAnalytics] = useState(null);
+
+    useEffect(() => {
+      if (!videoId) return;
+      
+      const interval = setInterval(() => {
+        getAnalytics(videoId)
+          .then(res => setAnalytics(res.data))
+          .catch(err => console.error('Error fetching analytics:', err));
+      }, 2000); // Refresh every 2 seconds
+
+      return () => clearInterval(interval);
+    }, [videoId]);
+
+    if (!analytics) return <p>Loading analytics...</p>;
+
+    return (
+      <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '20px' }}>
+        <h3>Video Analytics</h3>
+        <p><strong>Total Views:</strong> {analytics.totalViews}</p>
+        <p><strong>Avg Watch Time:</strong> {analytics.avgWatchTimeSeconds?.toFixed(2)} seconds</p>
+        <p><strong>Play/Pause Ratio:</strong> {analytics.playPauseRatio?.toFixed(2)}</p>
+      </div>
+    );
+  }
+  ```
+
+### 7.7 Create Main App Component
+- [ ] Update `src/App.jsx`:
+  ```javascript
+  import React, { useState } from 'react';
+  import VideoSelector from './components/VideoSelector';
+  import VideoPlayer from './components/VideoPlayer';
+  import AnalyticsDisplay from './components/AnalyticsDisplay';
+  import { v4 as uuidv4 } from 'uuid';
+
+  function App() {
+    const [selectedVideo, setSelectedVideo] = useState(null);
+    const [userId] = useState(uuidv4());
+
+    return (
+      <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+        <h1>Real-Time Video Analytics Platform</h1>
+        <p>User ID: {userId}</p>
+        
+        <VideoSelector onSelect={setSelectedVideo} />
+        
+        {selectedVideo && (
+          <>
+            <VideoPlayer videoId={selectedVideo} userId={userId} />
+            <AnalyticsDisplay videoId={selectedVideo} />
+          </>
+        )}
+      </div>
+    );
+  }
+
+  export default App;
+  ```
+- [ ] Install uuid: `npm install uuid`
+- [ ] Test by starting React app: `npm start`
+
+---
+
+## **PHASE 8: Integration Testing**
+
+### 8.1 Manual End-to-End Flow
+- [ ] Start Docker containers: `docker-compose up -d`
+- [ ] Start backend: `cd backend && mvn spring-boot:run`
+- [ ] Start frontend: `cd frontend && npm start`
+- [ ] Open http://localhost:3000 in browser
+- [ ] Select a video
+- [ ] Play video for 10 seconds
+- [ ] Pause video
+- [ ] Seek to different position
+- [ ] Watch analytics update in real-time
+- [ ] Verify backend logs show event consumption
+
+### 8.2 Verify Kafka Topic
+- [ ] Open terminal and exec into Kafka:
+  ```bash
+  docker exec -it kafka bash
+  ```
+- [ ] Check topic exists:
+  ```bash
+  kafka-topics --list --bootstrap-server localhost:9092
+  ```
+- [ ] Read messages from topic:
+  ```bash
+  kafka-console-consumer --bootstrap-server localhost:9092 \
+    --topic video-events --from-beginning
+  ```
+- [ ] Verify event JSON messages appear
+
+### 8.3 Verify Database
+- [ ] Connect to PostgreSQL using pgAdmin or CLI:
+  ```bash
+  docker exec -it postgres psql -U admin -d video_analytics
+  ```
+- [ ] Query analytics table:
+  ```sql
+  SELECT * FROM video_analytics;
+  ```
+- [ ] Verify records are updated with event counts
+- [ ] Query events log:
+  ```sql
+  SELECT * FROM video_events ORDER BY timestamp DESC;
+  ```
+
+### 8.4 Test Error Scenarios
+- [ ] Stop Kafka container and try publishing event
+- [ ] Verify error is logged and gracefully handled
+- [ ] Restart Kafka and verify recovery
+- [ ] Test with invalid videoId
+- [ ] Test with missing required fields
+- [ ] Verify appropriate error responses
+
+### 8.5 Write Unit Tests
+- [ ] Create `src/test/java/com/videoanalytics/producer/VideoEventProducerTest.java`:
+  ```java
+  @SpringBootTest
+  public class VideoEventProducerTest {
+    @Autowired
+    private VideoEventProducer producer;
+
+    @Test
+    public void testPublishEvent() throws Exception {
+      VideoEventDTO event = new VideoEventDTO();
+      event.setVideoId(UUID.randomUUID());
+      event.setEventType(EventType.PLAY);
+      
+      assertDoesNotThrow(() -> producer.publishEventSync(event));
+    }
+  }
+  ```
+- [ ] Run tests: `mvn test`
+- [ ] Verify all pass
+
+---
+
+## **PHASE 9: Performance & Optimization**
+
+### 9.1 Load Testing Setup
+- [ ] Install Apache JMeter from https://jmeter.apache.org/
+- [ ] Create test plan for event publishing:
+  - [ ] 100 thread users
+  - [ ] Ramp-up time: 10 seconds
+  - [ ] Loop count: 50
+  - [ ] Target: POST /api/events
+- [ ] Run load test: `jmeter -n -t test_plan.jmx -l results.jtl`
+- [ ] Analyze results: check latency, error rate, throughput
+- [ ] Document baseline metrics
+
+### 9.2 Monitor Kafka Consumer Lag
+- [ ] Enable Spring Boot Actuator metrics:
+  ```properties
+  management.endpoints.web.exposure.include=health,metrics
+  management.metrics.export.simple.enabled=true
+  ```
+- [ ] Check consumer lag: `http://localhost:8080/actuator/metrics/kafka.consumer.lag`
+- [ ] Monitor lag during load test
+- [ ] Verify lag is within acceptable range
+
+### 9.3 Optimize Producer Configuration
+- [ ] Batch events in producer:
+  ```java
+  configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, 32768); // 32KB
+  configProps.put(ProducerConfig.LINGER_MS_CONFIG, 100); // 100ms
+  ```
+- [ ] Add compression:
+  ```java
+  configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+  ```
+- [ ] Re-run load test and compare metrics
+
+### 9.4 Optimize Consumer Configuration
+- [ ] Increase parallelism:
+  ```properties
+  spring.kafka.listener.concurrency=10
+  ```
+- [ ] Batch processing in consumer:
+  ```properties
+  spring.kafka.consumer.max.poll.records=500
+  ```
+- [ ] Monitor improvement
+
+### 9.5 Database Query Optimization
+- [ ] Add indexes on frequently queried columns:
+  ```sql
+  CREATE INDEX idx_video_id ON video_analytics(video_id);
+  CREATE INDEX idx_event_video_user ON video_events(video_id, user_id);
+  ```
+- [ ] Test query performance using EXPLAIN ANALYZE
+- [ ] Document optimization results
+
+---
+
+## **PHASE 10: Advanced Features (Optional)**
+
+### 10.1 WebSocket Real-Time Updates
+- [ ] Add Spring WebSocket dependency: `spring-boot-starter-websocket`
+- [ ] Create `src/main/java/com/videoanalytics/config/WebSocketConfig.java`:
+  ```java
+  @Configuration
+  @EnableWebSocket
+  public class WebSocketConfig implements WebSocketConfigurer {
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+      registry.addHandler(new AnalyticsWebSocketHandler(), "/ws/analytics").setAllowedOrigins("*");
+    }
+  }
+  ```
+- [ ] Create WebSocket handler to push updates to connected clients
+- [ ] Update frontend to establish WebSocket connection
+- [ ] Test real-time push notifications
+
+### 10.2 Add Event Deduplication
+- [ ] Implement idempotent consumer using eventId:
+  ```java
+  Map<String, Boolean> processedEvents = new ConcurrentHashMap<>();
+  
+  if (processedEvents.containsKey(event.getId())) {
+    return; // Skip duplicate
+  }
+  processedEvents.put(event.getId(), true);
+  ```
+- [ ] Test with duplicate events
+
+### 10.3 Event Audit Logging
+- [ ] Create audit table in database
+- [ ] Log all events with: userId, videoId, action, timestamp, result
+- [ ] Create audit service to persist logs
+- [ ] Query audit logs for compliance/analysis
+
+### 10.4 Dashboard Charts
+- [ ] Update frontend to display charts using react-chartjs-2
+- [ ] Chart 1: Total Views Over Time
+- [ ] Chart 2: Play/Pause Distribution
+- [ ] Chart 3: Top 5 Videos by Views
+- [ ] Refresh charts every 5 seconds
+
+### 10.5 User Analytics
+- [ ] Track per-user statistics: videos watched, total watch time, favorite videos
+- [ ] Create user profile endpoint
+- [ ] Create user analytics dashboard component
+
+---
+
+## **PHASE 11: Documentation & Deployment**
+
+### 11.1 Create Project Documentation
+- [ ] Create `README.md`:
+  - [ ] Project overview and architecture diagram
+  - [ ] Prerequisites and system requirements
+  - [ ] Installation and setup instructions
+  - [ ] Running locally with Docker
+  - [ ] API documentation with examples
+  - [ ] Kafka topic schema and configuration
+  - [ ] Database schema
+  - [ ] Performance metrics and benchmarks
+  - [ ] Known issues and limitations
+- [ ] Create `ARCHITECTURE.md`:
+  - [ ] System design overview
+  - [ ] Event flow diagram
+  - [ ] Database schema diagram
+  - [ ] Component interactions
+- [ ] Create `API.md`:
+  - [ ] All REST endpoints with request/response examples
+  - [ ] WebSocket endpoints documentation
+- [ ] Create `DEPLOYMENT.md`:
+  - [ ] Deployment steps to production
+  - [ ] Docker build instructions
+  - [ ] Kubernetes manifests (optional)
+
+### 11.2 Create Postman Collection
+- [ ] Export all API endpoints as Postman collection
+- [ ] Include sample requests for each endpoint
+- [ ] Add environment variables for different stages
+- [ ] Share collection link in README
+
+### 11.3 Code Quality & Testing
+- [ ] Run code coverage: `mvn jacoco:report`
+- [ ] Verify coverage > 70%
+- [ ] Run SonarQube analysis (optional)
+- [ ] Fix any code smells
+
+### 11.4 GitHub Setup
+- [ ] Create GitHub repository
+- [ ] Create `.gitignore` for Java, Node, IDE files
+- [ ] Create `LICENSE` file
+- [ ] Push code with clear commit messages:
+  - [ ] "Initial project setup"
+  - [ ] "Add database entities and repositories"
+  - [ ] "Implement Kafka producer/consumer"
+  - [ ] "Add React frontend"
+  - [ ] "Add tests and documentation"
+- [ ] Add GitHub Actions CI/CD workflow:
+  - [ ] Run tests on every push
+  - [ ] Build Docker images
+  - [ ] Publish to Docker registry
+
+### 11.5 Local Deployment Verification
+- [ ] Clean all containers: `docker-compose down -v`
+- [ ] Fresh start: `docker-compose up -d`
+- [ ] Test entire application flow end-to-end
+- [ ] Verify all features working as expected
+- [ ] Document any setup issues
+
+### 11.6 Create Demo Video
+- [ ] Record 3-5 minute demo showing:
+  - [ ] Project architecture overview
+  - [ ] Selecting video and playing
+  - [ ] Events flowing through Kafka
+  - [ ] Real-time analytics updating
+  - [ ] Database queries
+- [ ] Upload to YouTube or GitHub (optional)
+
+---
+
+## **PHASE 12: Interview Preparation Talking Points**
+
+### 12.1 Architecture & Design
+- [ ] Explain why Kafka is used instead of REST polling
+- [ ] Discuss trade-offs: event-driven vs request-response
+- [ ] Explain partition strategy and consumer groups
+- [ ] Design decisions: topic retention, replication factor
+- [ ] Scalability: how to handle 1M concurrent users
+
+### 12.2 Technical Deep Dives
+- [ ] Kafka offsets and consumer lag management
+- [ ] Exactly-once semantics with idempotent processing
+- [ ] Database denormalization for analytics
+- [ ] WebSocket vs polling for real-time updates
+- [ ] Error handling and retry logic
+
+### 12.3 Production Considerations
+- [ ] Monitoring and observability (metrics, logs)
+- [ ] High availability and disaster recovery
+- [ ] Security: authentication, authorization, encryption
+- [ ] Performance optimization techniques
+- [ ] Operational challenges and learnings
+
+### 12.4 Interview Question Practice
+- [ ] "How would you handle duplicate events from Kafka?"
+- [ ] "What happens if database writes are slower than event consumption?"
+- [ ] "How would you migrate this to distributed system with multiple instances?"
+- [ ] "What's the maximum throughput this system can handle?"
+- [ ] "How would you ensure exactly-once delivery?"
+
+---
+
+## **COMPLETION CHECKLIST**
+
+### Final Verification
+- [ ] All phases completed successfully
+- [ ] End-to-end testing passed
+- [ ] Performance benchmarks documented
+- [ ] Code pushed to GitHub with comprehensive README
+- [ ] Documentation complete and clear
+- [ ] No TODOs or placeholder code remaining
+- [ ] All error scenarios handled gracefully
+- [ ] Application deployed and running locally
+- [ ] Ready for production deployment
+
+### What You've Built
+âœ… Industry-level event streaming pipeline
+âœ… Kafka producer/consumer patterns
+âœ… Real-time data aggregation
+âœ… Full-stack application (backend + frontend)
+âœ… Database design and optimization
+âœ… Error handling and resilience
+âœ… Performance monitoring
+âœ… Complete documentation
+
+### Next Steps
+- [ ] Deploy to cloud platform (AWS, Azure, GCP)
+- [ ] Add Kubernetes orchestration
+- [ ] Implement advanced monitoring with Prometheus/Grafana
+- [ ] Add machine learning for recommendations
+- [ ] Scale to handle millions of events per second
+- [ ] Present project in FAANG interviews
+
+---
+
+**Estimated Total Time:** 4-6 weeks of consistent development
+**Target Skill Level After:** Mid-level Kafka expertise, production-grade fullstack development
+**Interview Value:** High - demonstrates event-driven architecture, distributed systems thinking, fullstack implementation

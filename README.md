@@ -220,12 +220,132 @@ To see the full workflow:
 4. **Send messages** via Publisher API to `POST /kafka/publish`
 5. **Consumer automatically receives** and processes the messages
 
+## 🎓 Self-Learning Project: Real-Time Video Analytics Platform
+
+This repository includes a comprehensive **self-learning project** that demonstrates how to build an **enterprise-grade, real-time video engagement analytics platform** using Apache Kafka, Spring Boot, React, and PostgreSQL.
+
+### 📖 Project Documentation
+
+The complete learning material is available in the `self-learn-project-doc/` folder:
+
+- **[Interactive Dashboard](./self-learn-project-doc/project-dashboard.html)** - Start here! Open this HTML file in your browser to see:
+  - ✅ **12-Phase Implementation Roadmap** with 150+ tasks across 4-6 weeks
+  - ✅ **Complete Architecture Overview** - Problem statements, solutions, and benefits
+  - ✅ **Scale Capacity Analysis** - How the system handles 10K to 100M+ concurrent users
+  - ✅ **Multi-User Tracking** - How real-time events are tracked for individual users
+  - ✅ **User Identification** - 7-step journey showing how userId flows through entire system
+  - ✅ **Database Schema** - Two-table design for aggregated metrics and audit trails
+  - ✅ **Query Examples** - Real-world SQL patterns for analytics
+
+### 🚀 Quick Start with Self-Learning Project
+
+1. **View the Interactive Dashboard** (No setup required!)
+   ```bash
+   # Simply open in your browser:
+   open self-learn-project-doc/project-dashboard.html
+   # or
+   # Navigate to: file:///.../self-learn-project-doc/project-dashboard.html
+   ```
+
+2. **Understand the Architecture**
+   - Start with "Project Overview" section in the dashboard
+   - Review the "Problems vs Solutions" to understand real-world challenges
+   - Study the "Multi-User Tracking Architecture" to see how events flow
+
+3. **Learn the Scaling Concepts**
+   - Check "Scale Capacity" section showing Baseline → Enterprise → Global scale
+   - Understand how Kafka partitioning enables horizontal scaling
+   - See how consumer groups distribute load
+
+4. **Deep Dive into User Identification**
+   - Review "How System Identifies & Tracks Individual Users" section
+   - Study the 7-step journey from browser to database
+   - Examine SQL queries showing per-user vs aggregated analytics
+
+### 📋 What You'll Learn
+
+**Architecture & Design:**
+- Event-driven microservices architecture
+- Kafka topic partitioning strategies
+- Database schema design for analytics (aggregated + audit trail)
+- Real-time data flow design
+
+**Implementation Topics (Phase Breakdown):**
+- Phase 1-2: Project setup and backend foundation
+- Phase 3: Spring Boot REST APIs and Kafka configuration
+- Phase 4-5: Frontend React components and video player integration
+- Phase 6-7: Real-time WebSocket implementation
+- Phase 8-9: Database scaling and optimization
+- Phase 10-12: Deployment, monitoring, and production hardening
+
+**Real-World Patterns:**
+- How to identify and track individual users in real-time
+- Aggregating metrics across millions of events efficiently
+- Handling concurrent multi-user scenarios
+- Building compliance-ready audit trails
+
+### 🎯 Use Cases Covered
+
+- 🎬 **Video Analytics** - Track play/pause/seek events per user
+- 📊 **Real-Time Dashboards** - Display live metrics as events stream in
+- 👥 **Multi-User Scenarios** - Independently track multiple users on same video
+- 🔍 **Debugging** - Query individual user behavior when issues occur
+- 🤖 **Machine Learning** - Use detailed audit trail for recommendations
+- 📋 **Compliance** - Maintain immutable event log for auditing
+
+### 🏗️ Technology Stack
+
+- **Backend:** Spring Boot 3.2+, Spring Kafka, Spring Data JPA
+- **Frontend:** React 18+, Axios, WebSocket (optional)
+- **Message Broker:** Apache Kafka 3.x
+- **Database:** PostgreSQL 14+
+- **Containerization:** Docker & Docker Compose
+- **Language:** Java 17+, JavaScript/TypeScript
+
+### 📈 Project Statistics
+
+- **12 Phases** of implementation
+- **150+ Tasks** covering all aspects
+- **4-6 Weeks** estimated timeline
+- **10K+ Events/sec** baseline throughput
+- **100M+ Users** at global scale
+
+### 🔗 GitHub Repository Structure
+
+```
+kafka-consumer/
+├── README.md                          (this file)
+├── src/                               (Kafka Consumer code)
+├── pom.xml                            (Maven configuration)
+└── self-learn-project-doc/            (📚 Self-Learning Material)
+    ├── project-dashboard.html         (Interactive learning dashboard)
+    └── README.md                      (Self-learning guide)
+```
+
+### 💡 How to Use This Learning Material
+
+1. **Start with the Dashboard** - Open `project-dashboard.html` in your browser for interactive learning
+2. **Expand Each Phase** - Click on phase cards to see detailed tasks and subtasks
+3. **Follow the Checklist** - Progress tracking is saved locally in your browser
+4. **Study the Architecture Sections** - Review multi-user tracking, user identification, and scale capacity
+5. **Reference the Queries** - Use SQL examples for your own implementations
+6. **Implement Phase by Phase** - Use this as a roadmap for building your own system
+
+### 🌟 Key Insights from This Project
+
+- **The Golden Thread:** userId attached to every event enables individual tracking AND aggregated metrics
+- **Two-Table Strategy:** Separate `video_events` (detailed) and `video_analytics` (aggregated) tables for optimal performance
+- **Kafka as Event Log:** Immutable event log provides compliance, debugging, and ML training data
+- **Event-Driven at Scale:** Partitioning by videoId ensures ordering and enables horizontal scaling
+- **Frontend Responsibility:** Browser generates UUID, enabling independent user tracking without server-side session overhead
+
 ## 📚 Additional Resources
 
 - [Spring Boot Kafka Documentation](https://spring.io/projects/spring-kafka)
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
 - [Spring Boot Reference](https://spring.io/projects/spring-boot)
 - [Kafka Consumer Groups](https://kafka.apache.org/documentation/#consumerconfigs)
+- 📖 [Self-Learning Project Guide](./self-learn-project-doc/README.md)
 
 ## 📝 License
 
